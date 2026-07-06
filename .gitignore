@@ -1,0 +1,9 @@
+# Raw source material (originals used to produce assets/ — not needed for deployment)
+source-material/
+
+# Claude Code local tool config
+.claude/
+
+# OS junk
+.DS_Store
+Thumbs.db

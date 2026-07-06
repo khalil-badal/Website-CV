@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Khalil Badal — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600;800&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F2EA;
+    --surface:#FFFFFF;
+    --surface-2:#EDE9DE;
+    --text:#1A1815;
+    --muted:#4A453C;
+    --dim:#756D5E;
+    --brass:#3E6B63;
+    --border:#D8D2C3;
+    --mono:'Space Mono', monospace;
+    --sans:'Inter', sans-serif;
+    --display:'Big Shoulders Display', sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{
+    scroll-behavior:smooth;
+    background:var(--bg);
+  }
+  html, body{
+    min-height:100%;
+  }
+  body{
+    background-color:var(--bg);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%23D8D2C3' stroke-width='1' opacity='0.35'%3E%3Cpath d='M0 40 H60 V0'/%3E%3Cpath d='M160 40 H100 V0'/%3E%3Cpath d='M0 120 H60 V160'/%3E%3Cpath d='M160 120 H100 V160'/%3E%3Cpath d='M60 0 V160'/%3E%3Cpath d='M100 0 V160'/%3E%3Ccircle cx='60' cy='40' r='3'/%3E%3Ccircle cx='100' cy='40' r='3'/%3E%3Ccircle cx='60' cy='120' r='3'/%3E%3Ccircle cx='100' cy='120' r='3'/%3E%3C/g%3E%3C/svg%3E");
+    background-repeat:repeat;
+    background-size:160px 160px;
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  a{color:inherit;text-decoration:none;}
+  section{
+    padding:96px 24px;
+    max-width:980px;
+    margin:0 auto;
+    position:relative;
+  }
+  .kicker{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.12em;
+    color:var(--brass);
+    text-transform:lowercase;
+    margin-bottom:16px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .kicker::before{
+    content:'';
+    width:20px;
+    height:1px;
+    background:var(--brass);
+    display:inline-block;
+  }
+  h1,h2,h3{
+    font-family:var(--display);
+    font-weight:800;
+    line-height:1.05;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+  }
+  h2{font-size:clamp(28px,4.2vw,40px);margin-bottom:12px;}
+  p{color:var(--text);}
+  .lede{color:var(--muted);font-size:16px;max-width:640px;margin-bottom:56px;}
+
+  /* Divider trace */
+  .trace{
+    width:100%;
+    height:32px;
+    display:block;
+    margin:0 auto;
+  }
+
+  /* ===== NAV ===== */
+  nav{
+    position:sticky;
+    top:0;
+    z-index:50;
+    backdrop-filter:blur(8px);
+    background:rgba(245,242,234,0.88);
+    border-bottom:1px solid var(--border);
+  }
+  .nav-inner{
+    max-width:980px;
+    margin:0 auto;
+    padding:16px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .nav-logo{
+    font-family:var(--mono);
+    font-weight:700;
+    font-size:14px;
+    letter-spacing:0.02em;
+  }
+  .nav-logo span{color:var(--brass);}
+  .nav-links{
+    display:flex;
+    gap:28px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--dim);
+  }
+  .nav-links a{transition:color .2s;}
+  .nav-links a:hover{color:var(--brass);}
+  .nav-links a:focus-visible{outline:1px solid var(--brass);outline-offset:4px;}
+  @media (max-width:640px){
+    .nav-links{display:none;}
+  }
+
+  /* ===== TABLE OF CONTENTS (SIDEBAR) ===== */
+  .toc{
+    position:fixed;
+    left:28px;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:40;
+  }
+  .toc-inner{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    gap:22px;
+  }
+  .toc-line{
+    position:absolute;
+    left:3px;
+    top:4px;
+    bottom:4px;
+    width:1px;
+    background:var(--border);
+    z-index:-1;
+  }
+  .toc-link{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+  }
+  .toc-dot{
+    flex-shrink:0;
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--surface);
+    border:1.5px solid var(--dim);
+    transition:background .25s, border-color .25s, transform .25s;
+  }
+  .toc-text{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--dim);
+    letter-spacing:0.03em;
+    opacity:0;
+    transform:translateX(-4px);
+    transition:opacity .2s, transform .2s, color .2s;
+    white-space:nowrap;
+  }
+  .toc-link:hover .toc-text,
+  .toc-link.active .toc-text{
+    opacity:1;
+    transform:translateX(0);
+  }
+  .toc-link:hover .toc-dot{
+    border-color:var(--brass);
+  }
+  .toc-link.active .toc-dot{
+    background:var(--brass);
+    border-color:var(--brass);
+    transform:scale(1.15);
+  }
+  .toc-link.active .toc-text{
+    color:var(--brass);
+  }
+  @media (max-width:1180px){
+    .toc{display:none;}
+  }
+
+  /* ===== HERO ===== */
+  .hero{
+    padding-top:120px;
+    padding-bottom:80px;
+  }
+  @media (max-width:760px){
+    .hero{padding-top:64px;}
+  }
+  .hero h1{
+    font-size:clamp(44px,8vw,76px);
+    margin-bottom:18px;
+    letter-spacing:0.005em;
+  }
+  .hero .role{
+    font-family:var(--sans);
+    font-size:clamp(16px,2.2vw,20px);
+    color:var(--muted);
+    max-width:520px;
+    margin-bottom:32px;
+  }
+  .role strong{color:var(--text);font-weight:500;}
+  .hero-contacts{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    font-family:var(--mono);
+    font-size:13px;
+  }
+  .hero-contacts a{
+    color:var(--muted);
+    border-bottom:1px solid transparent;
+    transition:color .2s, border-color .2s;
+  }
+  .hero-contacts a:hover{color:var(--brass);border-color:var(--brass);}
+
+  /* ===== ABOUT ===== */
+  .about-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+  }
+  @media (max-width:700px){.about-grid{grid-template-columns:1fr;}}
+  .about-grid p{color:var(--muted);margin-bottom:16px;font-size:15px;}
+  .about-grid strong{color:var(--text);font-weight:600;}
+  .skill-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:24px;
+  }
+  .tag{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--dim);
+    border:1px solid var(--border);
+    padding:6px 12px;
+    border-radius:4px;
+  }
+
+  /* ===== PROJECT MODULES ===== */
+  .modules{
+    display:flex;
+    flex-direction:column;
+    gap:1px;
+    background:var(--border);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .module{
+    background:var(--surface);
+    padding:32px;
+    display:grid;
+    grid-template-columns:150px 1fr;
+    gap:28px;
+  }
+  @media (max-width:700px){
+    .module{grid-template-columns:1fr;gap:14px;}
+  }
+  .module-tag{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--brass);
+    letter-spacing:0.04em;
+  }
+  .module-tag > .tag-label{
+    text-transform:lowercase;
+  }
+  .module-tag .team{
+    display:block;
+    color:var(--dim);
+    margin-top:10px;
+    font-size:10.5px;
+    line-height:1.7;
+  }
+  .module h3{
+    font-size:23px;
+    margin-bottom:10px;
+    color:var(--text);
+  }
+  .module p{
+    color:var(--muted);
+    font-size:14.5px;
+    margin-bottom:14px;
+  }
+  .module ul{
+    list-style:none;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+  }
+  .module ul li{
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--muted);
+    border:1px solid var(--border);
+    padding:4px 9px;
+    border-radius:4px;
+  }
+  .module-figure{
+    margin-top:18px;
+  }
+  .module-figure img{
+    display:block;
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--surface-2);
+  }
+  .module-figure-cap{
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--dim);
+    margin-top:8px;
+  }
+  .module-figure-pair{
+    margin-top:18px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+  }
+  @media (max-width:500px){
+    .module-figure-pair{grid-template-columns:1fr;}
+  }
+  .module-figure-pair figure{
+    margin:0;
+  }
+  .module-figure-pair img{
+    display:block;
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--surface-2);
+  }
+  .module-figure-pair figcaption{
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--dim);
+    margin-top:8px;
+    text-align:center;
+  }
+
+  /* ===== AUDIO DEMO ===== */
+  .demo-box{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:12px;
+    padding:36px;
+  }
+  .demo-flow{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+    margin-bottom:28px;
+    letter-spacing:0.01em;
+  }
+  .demo-flow .arrow{color:var(--brass);margin:0 6px;}
+  .demo-switcher{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:28px;
+  }
+  @media (max-width:700px){.demo-switcher{grid-template-columns:1fr 1fr;}}
+  .demo-btn{
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    color:var(--muted);
+    font-family:var(--mono);
+    font-size:12px;
+    padding:16px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:all .2s;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .demo-btn .label{color:var(--text);font-size:13px;}
+  .demo-btn .sub{color:var(--muted);font-size:11px;}
+  .demo-btn:hover{border-color:var(--brass);}
+  .demo-btn:focus-visible{outline:1px solid var(--brass);outline-offset:2px;}
+  .demo-btn.active{
+    border-color:var(--brass);
+    background:rgba(62,107,99,0.08);
+  }
+  .demo-btn.active .label{color:var(--brass);}
+  .demo-status{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--muted);
+  }
+  .demo-dot{
+    width:8px;height:8px;border-radius:50%;
+    background:var(--muted);
+    transition:background .2s;
+  }
+  .demo-dot.playing{background:var(--brass);}
+  .demo-note{
+    font-size:12px;
+    color:var(--muted);
+    margin-top:18px;
+  }
+
+  /* ===== CODE PROJECTS ===== */
+  .repo-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(210px,1fr));
+    gap:14px;
+  }
+  .repo-card{
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:20px;
+    display:block;
+    transition:border-color .2s, transform .2s;
+  }
+  .repo-card:hover{border-color:var(--brass);transform:translateY(-2px);}
+  .repo-card:focus-visible{outline:1px solid var(--brass);outline-offset:2px;}
+  .repo-name{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--text);
+    margin-bottom:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .repo-arrow{color:var(--brass);flex-shrink:0;}
+  .repo-desc{
+    font-size:12.5px;
+    color:var(--muted);
+  }
+
+  /* ===== EXPERIENCE / EDUCATION ===== */
+  .timeline{
+    display:flex;
+    flex-direction:column;
+    gap:0;
+  }
+  .t-item{
+    display:grid;
+    grid-template-columns:130px 1fr;
+    gap:24px;
+    padding:22px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .t-item:last-child{border-bottom:none;}
+  @media (max-width:600px){.t-item{grid-template-columns:1fr;gap:6px;}}
+  .t-date{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--brass);
+  }
+  .t-item h4{
+    font-family:var(--sans);
+    font-weight:600;
+    font-size:15px;
+    margin-bottom:4px;
+    color:var(--text);
+  }
+  .t-item p{color:var(--muted);font-size:13.5px;}
+
+  .ost-player{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin-top:14px;
+    background:var(--surface-2);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:10px 14px;
+    max-width:340px;
+  }
+  .ost-play{
+    flex-shrink:0;
+    width:34px;
+    height:34px;
+    border-radius:50%;
+    border:1px solid var(--brass);
+    background:var(--surface);
+    color:var(--brass);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:background .2s, color .2s;
+  }
+  .ost-play:hover{background:var(--brass);color:var(--surface);}
+  .ost-play:focus-visible{outline:1px solid var(--brass);outline-offset:2px;}
+  .ost-info{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+    min-width:0;
+  }
+  .ost-title{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--text);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .ost-status{
+    font-family:var(--mono);
+    font-size:10.5px;
+    color:var(--dim);
+  }
+
+  .photo-pair{
+    margin-top:16px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    max-width:420px;
+  }
+  @media (max-width:500px){
+    .photo-pair{grid-template-columns:1fr;max-width:240px;}
+  }
+  .photo-pair figure{margin:0;}
+  .photo-pair img{
+    display:block;
+    width:100%;
+    border:1px solid var(--border);
+    border-radius:8px;
+    background:var(--surface-2);
+  }
+  .photo-pair figcaption{
+    font-family:var(--mono);
+    font-size:10px;
+    color:var(--dim);
+    margin-top:6px;
+    text-align:center;
+  }
+
+  .cert-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:12px;
+  }
+  .cert-thumb{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    border:1px solid var(--border);
+    border-radius:6px;
+    padding:6px 10px;
+    background:var(--surface-2);
+    cursor:pointer;
+    transition:border-color .2s, color .2s;
+  }
+  .cert-thumb:hover, .cert-thumb:focus-visible{
+    border-color:var(--brass);
+    color:var(--brass);
+    outline:none;
+  }
+  .cert-thumb img{
+    width:36px;
+    height:26px;
+    object-fit:cover;
+    border-radius:3px;
+    border:1px solid var(--border);
+  }
+
+  .lightbox{
+    position:fixed;
+    inset:0;
+    background:rgba(26,24,21,0.85);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+    z-index:100;
+    cursor:zoom-out;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{
+    max-width:min(900px,100%);
+    max-height:100%;
+    border-radius:6px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.4);
+  }
+
+  /* ===== CONTACT / FOOTER ===== */
+  .contact-section{text-align:center;padding-bottom:60px;}
+  .contact-section .lede{margin-left:auto;margin-right:auto;}
+  .contact-links{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:16px;
+    margin-top:8px;
+  }
+  .contact-link{
+    font-family:var(--mono);
+    font-size:14px;
+    border:1px solid var(--border);
+    padding:14px 22px;
+    border-radius:8px;
+    color:var(--text);
+    transition:border-color .2s, color .2s;
+  }
+  .contact-link:hover{border-color:var(--brass);color:var(--brass);}
+  footer{
+    text-align:center;
+    padding:32px 24px;
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--muted);
+    border-top:1px solid var(--border);
+  }
+
+  ::selection{background:var(--brass);color:var(--bg);}
+
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo">K<span>·</span>BADAL</div>
+    <div class="nav-links">
+      <a href="#about">about</a>
+      <a href="#work">work</a>
+      <a href="#demo">audio</a>
+      <a href="#code">code</a>
+      <a href="#contact">contact</a>
+    </div>
+  </div>
+</nav>
+
+<aside class="toc" aria-label="Table of contents">
+  <div class="toc-inner">
+    <div class="toc-line"></div>
+    <a href="#top" class="toc-link active" data-section="top"><span class="toc-dot"></span><span class="toc-text">intro</span></a>
+    <a href="#about" class="toc-link" data-section="about"><span class="toc-dot"></span><span class="toc-text">about</span></a>
+    <a href="#work" class="toc-link" data-section="work"><span class="toc-dot"></span><span class="toc-text">work</span></a>
+    <a href="#demo" class="toc-link" data-section="demo"><span class="toc-dot"></span><span class="toc-text">audio</span></a>
+    <a href="#code" class="toc-link" data-section="code"><span class="toc-dot"></span><span class="toc-text">code</span></a>
+    <a href="#experience" class="toc-link" data-section="experience"><span class="toc-dot"></span><span class="toc-text">experience</span></a>
+    <a href="#education" class="toc-link" data-section="education"><span class="toc-dot"></span><span class="toc-text">education</span></a>
+    <a href="#contact" class="toc-link" data-section="contact"><span class="toc-dot"></span><span class="toc-text">contact</span></a>
+  </div>
+</aside>
+
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div>
+    <h1>Khalil T. Badal</h1>
+    <p class="role">
+      Electronics Engineering student with a strong interest in
+      <strong>software engineering</strong>, <strong>intelligent systems</strong>, and
+      <strong>digital hardware</strong>. Currently building reinforcement learning systems,
+      audio DSP software, and low-level hardware projects that bridge electronics and software.
+    </p>
+    <p class="role">
+      Working toward a career in software engineering by combining strong engineering
+      fundamentals with hands-on software development.
+    </p>
+    <div class="hero-contacts">
+      <a href="mailto:khalil.badal.eng@ust.edu.ph">khalil.badal.eng@ust.edu.ph</a>
+      <a href="https://github.com/khalil-badal" target="_blank" rel="noopener">github.com/khalil-badal</a>
+    </div>
+  </div>
+</section>
+
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 16 L400 16 L420 4 L440 28 L460 16 L980 16" stroke="#D8D2C3" stroke-width="1" fill="none"/></svg>
+
+<!-- ============ ABOUT ============ -->
+<section id="about">
+  <div class="kicker">about</div>
+  <h2>Background</h2>
+  <div class="about-grid">
+    <div>
+      <p>
+        I'm an <strong>Electronics Engineering student</strong> at the University of Santo
+        Tomas (2023–present). Before that, I completed the STEM program at Romblon State
+        University, graduating with High Honors while serving as Class President.
+      </p>
+      <p>
+        While my academic foundation is in electronics, my long-term goal is to become a
+        <strong>software engineer</strong> specializing in systems that interact closely with
+        hardware. My interests include reinforcement learning, computer architecture,
+        embedded systems, audio DSP, and software development.
+      </p>
+    </div>
+    <div>
+      <p>
+        My projects range from designing digital hardware at the gate level to developing
+        multi-agent reinforcement learning systems for transportation research. Outside
+        academics, I build VST3 audio plugins in JUCE/C++, where I implement DSP algorithms
+        and software that model real-world audio processing.
+      </p>
+      <p>
+        I'm particularly interested in software that sits close to the hardware — where
+        engineering principles, performance, and system design all come together.
+      </p>
+      <div class="skill-tags">
+        <span class="tag">Python</span>
+        <span class="tag">C++</span>
+        <span class="tag">MATLAB</span>
+        <span class="tag">Verilog</span>
+        <span class="tag">Circuit Analysis</span>
+        <span class="tag">Audio DSP</span>
+        <span class="tag">Networking</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+
+<!-- ============ FEATURED PROJECTS ============ -->
+<section id="work">
+  <div class="kicker">featured work</div>
+  <h2>Modules</h2>
+  <p class="lede">Three deep technical builds, spanning learned control systems, hardware architecture, and audio engineering.</p>
+
+  <div class="modules">
+
+    <div class="module">
+      <div class="module-tag">
+        <span class="tag-label">01 · thesis, ongoing</span>
+        <span class="team">Research team<br>Badal · Lopez · Mananguit<br>Marquez · Medenilla<br><br>Adviser<br>Asst. Prof. Kanny Krizzy D. Serrano, MSc</span>
+      </div>
+      <div>
+        <h3>MARL for dynamic bus scheduling</h3>
+        <p>
+          Undergraduate thesis evaluating a Multi-Agent Reinforcement Learning approach —
+          a parameter-sharing Double Deep Q-Network under Centralized Training with
+          Decentralized Execution — for real-time bus holding and stop-skipping control on
+          Metro Manila's EDSA Carousel, a corridor carrying upward of 180,000 daily riders.
+          The policy is trained and stress-tested on a SUMO-calibrated microsimulation
+          under non-ideal conditions: weather-induced travel delays, discrete bus
+          breakdowns, and passenger demand surges. Khalil's contribution centers on the
+          MARL architecture, DDQN implementation, and simulation/evaluation design.
+        </p>
+        <ul>
+          <li>DDQN + parameter sharing</li>
+          <li>SUMO microsimulation</li>
+          <li>PettingZoo AEC</li>
+          <li>Python</li>
+        </ul>
+        <figure class="module-figure">
+          <img src="assets/images/thesis-marl-diagram.png" alt="Diagram comparing single-agent RL (one centralized policy controlling the whole bus fleet) against multi-agent RL with parameter sharing (a shared policy acting on each bus's own local observation), from the thesis manuscript.">
+          <figcaption class="module-figure-cap">Fig. — SARL vs. MARL formulation, from the thesis manuscript.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="module-tag">
+        <span class="tag-label">02 · coursework</span>
+        <span class="team">Project team<br>Abamonga · Badal · Barola<br>Fernando · Ko · Mananguit<br>Nacu · Villajin · Zoleta</span>
+      </div>
+      <div>
+        <h3>SAP-2 microprocessor design</h3>
+        <p>
+          A full 8-bit microprocessor architecture designed and coded from the gate level up
+          in <strong style="color:var(--text)">Verilog HDL</strong> for UST's Microprocessor
+          Design course, synthesized in <strong style="color:var(--text)">Intel Quartus</strong>
+          and verified against <strong style="color:var(--text)">ModelSim</strong> timing
+          diagrams. Covers an 8-bit data bus, 16-bit addressing, Program Counter, Memory
+          Address/Data Registers, Instruction Register and Decoder, ALU, Accumulator,
+          general-purpose registers, a Flags Register, and I/O ports — all tied together
+          under a custom-designed Instruction Set Architecture and verified through
+          simulation against sample assembly programs. Khalil contributed to the
+          architecture and control unit design.
+        </p>
+        <ul>
+          <li>Verilog HDL</li>
+          <li>Quartus</li>
+          <li>ModelSim</li>
+          <li>Custom ISA</li>
+          <li>Control unit</li>
+        </ul>
+        <figure class="module-figure">
+          <img src="assets/images/mpu-block-diagram.png" alt="Block diagram of the SAP-2-based microprocessor, showing the W Bus connecting the Accumulator, ALU, Temporary Register, Registers B and C, Output Port, and the Program Counter / Memory Address Register / Memory / Memory Data Register chain, alongside the Instruction Register, Instruction Decoder, Control Matrix, and Ring Counter.">
+          <figcaption class="module-figure-cap">Fig. 1 — Generalized block diagram of the SAP-2 microprocessor.</figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="module-tag"><span class="tag-label">03 · solo project</span></div>
+      <div>
+        <h3>Khyle Audio — plugin suite</h3>
+        <p>
+          A pair of VST3 audio plugins built independently in JUCE/C++, modeling real
+          circuit and DSP behavior rather than approximating it — compiled and tested end
+          to end in Reaper. <strong style="color:var(--text)">Rootbound</strong> is a
+          granular reverb built around a custom grain engine and diffusion network, aiming
+          for an Eventide Blackhole-style character. <strong style="color:var(--text)">Pocket
+          Tracer</strong> is a multi-mode delay plugin. Hear both in action below.
+        </p>
+        <ul>
+          <li>JUCE</li>
+          <li>C++</li>
+          <li>Real DSP modeling</li>
+          <li>VST3</li>
+        </ul>
+        <div class="module-figure-pair">
+          <figure>
+            <img src="assets/images/rootbound-gui.png" alt="Rootbound plugin GUI — granular reverb built in JUCE/C++.">
+            <figcaption>Rootbound — granular reverb</figcaption>
+          </figure>
+          <figure>
+            <img src="assets/images/pockettracer-gui.png" alt="Pocket Tracer plugin GUI — multi-mode delay built in JUCE/C++.">
+            <figcaption>Pocket Tracer — multi-mode delay</figcaption>
+          </figure>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+
+<!-- ============ AUDIO DEMO ============ -->
+<section id="demo">
+  <div class="kicker">hear my plugins</div>
+  <h2>Khyle Audio demo</h2>
+  <p class="lede">One clean guitar signal, run through Khyle Audio's plugin chain. Toggle between states to hear each plugin's contribution — only one clip plays at a time.</p>
+
+  <div class="demo-box">
+    <div class="demo-flow">No effects <span class="arrow">→</span> Reverb added <span class="arrow">→</span> Delay added <span class="arrow">→</span> Full treatment</div>
+
+    <div class="demo-switcher" role="group" aria-label="Audio demo state switcher">
+      <button class="demo-btn active" data-state="dry" aria-pressed="true">
+        <span class="label">Raw signal</span>
+        <span class="sub">Dry, no effects</span>
+      </button>
+      <button class="demo-btn" data-state="rootbound" aria-pressed="false">
+        <span class="label">Rootbound</span>
+        <span class="sub">Reverb only</span>
+      </button>
+      <button class="demo-btn" data-state="pockettracer" aria-pressed="false">
+        <span class="label">Pocket Tracer</span>
+        <span class="sub">Delay only</span>
+      </button>
+      <button class="demo-btn" data-state="both" aria-pressed="false">
+        <span class="label">Both plugins</span>
+        <span class="sub">Reverb + delay</span>
+      </button>
+    </div>
+
+    <div class="demo-status">
+      <span class="demo-dot" id="demoDot"></span>
+      <span id="demoStatusText">Ready — tap a state to play</span>
+    </div>
+    <p class="demo-note">Audio placeholders — swap in real clips (see Maintenance notes).</p>
+  </div>
+
+  <audio id="audio-dry" preload="none">
+    <!-- Replace with: dry-guitar.mp3 -->
+    <source src="dry-guitar.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audio-rootbound" preload="none">
+    <!-- Replace with: rootbound-guitar.mp3 -->
+    <source src="rootbound-guitar.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audio-pockettracer" preload="none">
+    <!-- Replace with: pockettracer-guitar.mp3 -->
+    <source src="pockettracer-guitar.mp3" type="audio/mpeg">
+  </audio>
+  <audio id="audio-both" preload="none">
+    <!-- Replace with: both-guitar.mp3 -->
+    <source src="both-guitar.mp3" type="audio/mpeg">
+  </audio>
+</section>
+
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+
+<!-- ============ CODE PROJECTS ============ -->
+<section id="code">
+  <div class="kicker">code projects</div>
+  <h2>From GitHub</h2>
+  <p class="lede">Python programming work from coursework and personal data analysis.</p>
+
+  <div class="repo-grid">
+    <a class="repo-card" href="https://github.com/khalil-badal/2023-Spotify-Data-Analysis" target="_blank" rel="noopener">
+      <div class="repo-name">Spotify Data Analysis <span class="repo-arrow">↗</span></div>
+      <div class="repo-desc">Trends, correlations, and visualizations from Spotify streaming data using Python.</div>
+    </a>
+    <a class="repo-card" href="https://github.com/khalil-badal/Experiment-1" target="_blank" rel="noopener">
+      <div class="repo-name">Experiment 1 <span class="repo-arrow">↗</span></div>
+      <div class="repo-desc">Applied Python programming exercise, ECE Advanced Programming course.</div>
+    </a>
+    <a class="repo-card" href="https://github.com/khalil-badal/Experiment-2" target="_blank" rel="noopener">
+      <div class="repo-name">Experiment 2 <span class="repo-arrow">↗</span></div>
+      <div class="repo-desc">Applied Python programming exercise, ECE Advanced Programming course.</div>
+    </a>
+    <a class="repo-card" href="https://github.com/khalil-badal/Experiment-3" target="_blank" rel="noopener">
+      <div class="repo-name">Experiment 3 <span class="repo-arrow">↗</span></div>
+      <div class="repo-desc">Applied Python programming exercise, ECE Advanced Programming course.</div>
+    </a>
+    <a class="repo-card" href="https://github.com/khalil-badal/Experiment-4" target="_blank" rel="noopener">
+      <div class="repo-name">Experiment 4 <span class="repo-arrow">↗</span></div>
+      <div class="repo-desc">Applied Python programming exercise, ECE Advanced Programming course.</div>
+    </a>
+  </div>
+</section>
+
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+
+<!-- ============ EXPERIENCE ============ -->
+<section id="experience">
+  <div class="kicker">experience & involvement</div>
+  <h2>Track record</h2>
+
+  <div class="timeline">
+    <div class="t-item">
+      <div class="t-date">2024–2025</div>
+      <div>
+        <h4>Video game composer & sound designer — RoboGear Auto (DreamOut)</h4>
+        <p>Philippine Game Development Awards Nominee, Best Sound Design. Composed promotional and in-game music, collaborated with developers and sound engineers, and presented at the Philippine Game Development Expo.</p>
+        <div class="ost-player">
+          <button class="ost-play" id="ostPlayBtn" aria-label="Play RoboGear Auto OST excerpt" aria-pressed="false">
+            <svg id="ostIconPlay" viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M6 4l14 8-14 8z"/></svg>
+            <svg id="ostIconPause" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="display:none;"><rect x="5" y="4" width="5" height="16"/><rect x="14" y="4" width="5" height="16"/></svg>
+          </button>
+          <div class="ost-info">
+            <span class="ost-title">RoboGear Auto — OST excerpt</span>
+            <span class="ost-status" id="ostStatus">Tap to play</span>
+          </div>
+        </div>
+        <audio id="ostAudio" preload="none">
+          <!-- Replace with: robogear-ost.mp3 -->
+          <source src="robogear-ost.mp3" type="audio/mpeg">
+        </audio>
+        <div class="photo-pair">
+          <figure>
+            <img src="assets/images/robogear-pgdx-1.jpg" alt="RoboGear Auto booth at the Philippine Game Development Expo (PGDX), photo 1.">
+          </figure>
+          <figure>
+            <img src="assets/images/robogear-pgdx-2.jpg" alt="RoboGear Auto booth at the Philippine Game Development Expo (PGDX), photo 2.">
+          </figure>
+        </div>
+        <p class="module-figure-cap" style="margin-top:8px;">RoboGear Auto at PGDX (Philippine Game Development Expo)</p>
+      </div>
+    </div>
+    <div class="t-item">
+      <div class="t-date">2024–2025</div>
+      <div>
+        <h4>Audio Producer — UST Tiger TV</h4>
+        <p>Produced audio for UST's official student broadcast organization.</p>
+      </div>
+    </div>
+    <div class="t-item">
+      <div class="t-date">2025–present</div>
+      <div>
+        <h4>Member — UST Network of Electronics Engineering Students</h4>
+        <p>Active member of UST's electronics engineering student organization.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+
+<!-- ============ EDUCATION ============ -->
+<section id="education">
+  <div class="kicker">education & certifications</div>
+  <h2>Foundations</h2>
+
+  <div class="timeline">
+    <div class="t-item">
+      <div class="t-date">2023–present</div>
+      <div>
+        <h4>BS Electronics Engineering — University of Santo Tomas</h4>
+        <p>Faculty of Engineering. Undergraduate thesis on MARL-based dynamic bus scheduling (ongoing).</p>
+      </div>
+    </div>
+    <div class="t-item">
+      <div class="t-date">2021–2023</div>
+      <div>
+        <h4>STEM — Romblon State University</h4>
+        <p>Graduated with High Honors. Class President. Champion, University-wide Team Quiz Bee.</p>
+      </div>
+    </div>
+    <div class="t-item">
+      <div class="t-date">2025–2026</div>
+      <div>
+        <h4>CCNA: Introduction to Networks</h4>
+        <p>Cisco Networking Academy, via University of Santo Tomas.</p>
+        <div class="cert-row">
+          <button class="cert-thumb" type="button" data-cert-src="assets/certs/ccna-intro-to-networks.png" data-cert-alt="CCNA: Introduction to Networks certificate, awarded to Khalil Badal">
+            <img src="assets/certs/ccna-intro-to-networks.png" alt="">
+            <span>View certificate</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="t-item">
+      <div class="t-date">2025–2026</div>
+      <div>
+        <h4>CCNA: Switching, Routing, and Wireless Essentials</h4>
+        <p>Cisco Networking Academy, via University of Santo Tomas.</p>
+        <div class="cert-row">
+          <button class="cert-thumb" type="button" data-cert-src="assets/certs/ccna-switching-routing-wireless.png" data-cert-alt="CCNA: Switching, Routing, and Wireless Essentials certificate, awarded to Khalil Badal">
+            <img src="assets/certs/ccna-switching-routing-wireless.png" alt="">
+            <span>View certificate</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact" class="contact-section">
+  <div class="kicker" style="justify-content:center;">get in touch</div>
+  <h2>Let's talk</h2>
+  <p class="lede">Reach out for questions, collaboration, or a closer look at any of the work above.</p>
+  <div class="contact-links">
+    <a class="contact-link" href="mailto:khalil.badal.eng@ust.edu.ph">khalil.badal.eng@ust.edu.ph</a>
+    <a class="contact-link" href="mailto:khalilbadal04@gmail.com">khalilbadal04@gmail.com</a>
+    <a class="contact-link" href="https://github.com/khalil-badal" target="_blank" rel="noopener">github.com/khalil-badal</a>
+  </div>
+</section>
+
+<footer>Khalil T. Badal — built with intent, not a template.</footer>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Certificate viewer">
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+  const tocLinks = document.querySelectorAll('.toc-link');
+  const tocSections = Array.from(tocLinks).map(link => {
+    const id = link.dataset.section;
+    return { link, el: document.getElementById(id) };
+  }).filter(s => s.el);
+
+  function updateActiveTocLink(){
+    const scrollPos = window.scrollY + window.innerHeight * 0.35;
+    let current = tocSections[0];
+    for (const s of tocSections){
+      if (s.el.offsetTop <= scrollPos){
+        current = s;
+      }
+    }
+    tocLinks.forEach(l => l.classList.remove('active'));
+    if (current) current.link.classList.add('active');
+  }
+
+  window.addEventListener('scroll', updateActiveTocLink, { passive: true });
+  window.addEventListener('resize', updateActiveTocLink);
+  updateActiveTocLink();
+  const clips = {
+    dry: document.getElementById('audio-dry'),
+    rootbound: document.getElementById('audio-rootbound'),
+    pockettracer: document.getElementById('audio-pockettracer'),
+    both: document.getElementById('audio-both')
+  };
+  const buttons = document.querySelectorAll('.demo-btn');
+  const dot = document.getElementById('demoDot');
+  const statusText = document.getElementById('demoStatusText');
+  let currentAudio = null;
+
+  function stopAll(){
+    Object.values(clips).forEach(a => { a.pause(); a.currentTime = 0; });
+  }
+
+  function setActive(btn){
+    buttons.forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-pressed','false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed','true');
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const state = btn.dataset.state;
+      stopAll();
+      setActive(btn);
+      currentAudio = clips[state];
+      currentAudio.currentTime = 0;
+      const playPromise = currentAudio.play();
+      if (playPromise !== undefined){
+        playPromise.then(() => {
+          dot.classList.add('playing');
+          statusText.textContent = 'Playing — ' + btn.querySelector('.label').textContent;
+        }).catch(() => {
+          dot.classList.remove('playing');
+          statusText.textContent = 'Audio file not found yet — placeholder only';
+        });
+      }
+    });
+  });
+
+  Object.values(clips).forEach(a => {
+    a.addEventListener('ended', () => {
+      dot.classList.remove('playing');
+      statusText.textContent = 'Finished — tap a state to replay';
+    });
+  });
+
+  const ostAudio = document.getElementById('ostAudio');
+  const ostPlayBtn = document.getElementById('ostPlayBtn');
+  const ostIconPlay = document.getElementById('ostIconPlay');
+  const ostIconPause = document.getElementById('ostIconPause');
+  const ostStatus = document.getElementById('ostStatus');
+
+  function stopDemoClips(){
+    Object.values(clips).forEach(a => { a.pause(); a.currentTime = 0; });
+    dot.classList.remove('playing');
+    statusText.textContent = 'Ready — tap a state to play';
+    buttons.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed','false'); });
+  }
+
+  ostPlayBtn.addEventListener('click', () => {
+    if (ostAudio.paused){
+      stopDemoClips();
+      const playPromise = ostAudio.play();
+      if (playPromise !== undefined){
+        playPromise.then(() => {
+          ostIconPlay.style.display = 'none';
+          ostIconPause.style.display = 'block';
+          ostPlayBtn.setAttribute('aria-pressed','true');
+          ostStatus.textContent = 'Playing';
+        }).catch(() => {
+          ostStatus.textContent = 'Audio file not found yet — placeholder only';
+        });
+      }
+    } else {
+      ostAudio.pause();
+      ostIconPlay.style.display = 'block';
+      ostIconPause.style.display = 'none';
+      ostPlayBtn.setAttribute('aria-pressed','false');
+      ostStatus.textContent = 'Paused';
+    }
+  });
+
+  ostAudio.addEventListener('ended', () => {
+    ostIconPlay.style.display = 'block';
+    ostIconPause.style.display = 'none';
+    ostPlayBtn.setAttribute('aria-pressed','false');
+    ostStatus.textContent = 'Finished — tap to replay';
+  });
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (!ostAudio.paused){
+        ostAudio.pause();
+        ostAudio.currentTime = 0;
+        ostIconPlay.style.display = 'block';
+        ostIconPause.style.display = 'none';
+        ostPlayBtn.setAttribute('aria-pressed','false');
+        ostStatus.textContent = 'Tap to play';
+      }
+    });
+  });
+
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+
+  document.querySelectorAll('.cert-thumb').forEach(btn => {
+    btn.addEventListener('click', () => {
+      lightboxImg.src = btn.dataset.certSrc;
+      lightboxImg.alt = btn.dataset.certAlt || '';
+      lightbox.classList.add('open');
+    });
+  });
+
+  function closeLightbox(){
+    lightbox.classList.remove('open');
+    lightboxImg.src = '';
+  }
+
+  lightbox.addEventListener('click', closeLightbox);
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
+
+</body>
+</html>
