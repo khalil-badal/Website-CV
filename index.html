@@ -10,18 +10,34 @@
 <style>
   :root{
     --bg:#F5F2EA;
+    --bg-rgb:245,242,234;
     --surface:#FFFFFF;
     --surface-2:#EDE9DE;
     --text:#1A1815;
     --muted:#4A453C;
     --dim:#756D5E;
     --brass:#3E6B63;
+    --brass-rgb:62,107,99;
     --rust:#B5502E;
     --gold:#B98A2E;
     --border:#D8D2C3;
     --mono:'Space Mono', monospace;
     --sans:'Inter', sans-serif;
     --display:'Big Shoulders Display', sans-serif;
+  }
+  [data-theme="dark"]{
+    --bg:#1B1914;
+    --bg-rgb:27,25,20;
+    --surface:#242119;
+    --surface-2:#2E2A20;
+    --text:#F2EEE2;
+    --muted:#C7C0AE;
+    --dim:#8D8570;
+    --brass:#5EA394;
+    --brass-rgb:94,163,148;
+    --rust:#E2825A;
+    --gold:#E3B15A;
+    --border:#3A3527;
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{
@@ -42,6 +58,11 @@
     line-height:1.6;
     -webkit-font-smoothing:antialiased;
     min-height:100vh;
+    transition:background-color .2s, color .2s;
+  }
+  [data-theme="dark"] body{
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cg fill='none' stroke='%233A3527' stroke-width='1' opacity='0.45'%3E%3Cpath d='M0 40 H60 V0'/%3E%3Cpath d='M160 40 H100 V0'/%3E%3Cpath d='M0 120 H60 V160'/%3E%3Cpath d='M160 120 H100 V160'/%3E%3Cpath d='M60 0 V160'/%3E%3Cpath d='M100 0 V160'/%3E%3Ccircle cx='60' cy='40' r='3'/%3E%3Ccircle cx='100' cy='40' r='3'/%3E%3Ccircle cx='60' cy='120' r='3'/%3E%3Ccircle cx='100' cy='120' r='3'/%3E%3C/g%3E%3C/svg%3E");
   }
   a{color:inherit;text-decoration:none;}
   section{
@@ -85,6 +106,7 @@
     height:32px;
     display:block;
     margin:0 auto;
+    color:var(--border);
   }
 
   /* ===== NAV ===== */
@@ -93,7 +115,7 @@
     top:0;
     z-index:50;
     backdrop-filter:blur(8px);
-    background:rgba(245,242,234,0.88);
+    background:rgba(var(--bg-rgb),0.88);
     border-bottom:1px solid var(--border);
   }
   .nav-inner{
@@ -113,6 +135,11 @@
     line-height:1;
   }
   .nav-logo span{color:var(--brass);}
+  .nav-right{
+    display:flex;
+    align-items:center;
+    gap:20px;
+  }
   .nav-links{
     display:flex;
     gap:28px;
@@ -126,6 +153,49 @@
   @media (max-width:640px){
     .nav-links{display:none;}
   }
+  .theme-toggle, .nav-hamburger{
+    width:32px;
+    height:32px;
+    flex-shrink:0;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:var(--surface-2);
+    color:var(--dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:border-color .2s, color .2s;
+  }
+  .theme-toggle:hover, .nav-hamburger:hover{border-color:var(--brass);color:var(--brass);}
+  .theme-toggle:focus-visible, .nav-hamburger:focus-visible{outline:1px solid var(--brass);outline-offset:2px;}
+  .theme-toggle svg, .nav-hamburger svg{width:16px;height:16px;}
+  .nav-hamburger{display:none;}
+  .nav-hamburger .icon-close{display:none;}
+  .nav-hamburger.open .icon-open{display:none;}
+  .nav-hamburger.open .icon-close{display:block;}
+  @media (max-width:640px){
+    .nav-hamburger{display:flex;}
+  }
+  .mobile-menu{
+    display:none;
+    flex-direction:column;
+    padding:4px 24px 16px;
+    border-top:1px solid var(--border);
+  }
+  .mobile-menu.open{display:flex;}
+  @media (min-width:641px){
+    .mobile-menu{display:none !important;}
+  }
+  .mobile-menu a{
+    font-family:var(--mono);
+    font-size:13px;
+    color:var(--dim);
+    padding:12px 0;
+    border-bottom:1px solid var(--border);
+  }
+  .mobile-menu a:last-child{border-bottom:none;}
+  .mobile-menu a:hover{color:var(--brass);}
 
   /* ===== TABLE OF CONTENTS (SIDEBAR) ===== */
   .toc{
@@ -405,7 +475,7 @@
   .demo-btn:focus-visible{outline:1px solid var(--brass);outline-offset:2px;}
   .demo-btn.active{
     border-color:var(--brass);
-    background:rgba(62,107,99,0.08);
+    background:rgba(var(--brass-rgb),0.08);
   }
   .demo-btn.active .label{color:var(--brass);}
   .demo-status{
@@ -658,6 +728,70 @@
     transition:border-color .2s, color .2s;
   }
   .contact-link:hover{border-color:var(--brass);color:var(--brass);}
+
+  .contact-form{
+    max-width:480px;
+    margin:0 auto 40px;
+    text-align:left;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .form-field{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .form-field label{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--dim);
+    letter-spacing:0.03em;
+  }
+  .form-field input, .form-field textarea{
+    font-family:var(--sans);
+    font-size:14px;
+    color:var(--text);
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:12px 14px;
+    resize:vertical;
+  }
+  .form-field input:focus, .form-field textarea:focus{
+    outline:none;
+    border-color:var(--brass);
+  }
+  .form-submit{
+    font-family:var(--mono);
+    font-size:14px;
+    color:var(--surface);
+    background:var(--brass);
+    border:1px solid var(--brass);
+    padding:14px 22px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:opacity .2s;
+    align-self:flex-start;
+  }
+  .form-submit:hover{opacity:0.85;}
+  .form-submit:disabled{opacity:0.6;cursor:not-allowed;}
+  .form-status{
+    font-family:var(--mono);
+    font-size:12px;
+    color:var(--dim);
+    min-height:16px;
+  }
+  .form-status.success{color:var(--brass);}
+  .form-status.error{color:var(--rust);}
+  .contact-divider{
+    font-family:var(--mono);
+    font-size:11px;
+    color:var(--dim);
+    text-align:center;
+    margin:32px 0 24px;
+    letter-spacing:0.05em;
+  }
   footer{
     text-align:center;
     padding:32px 24px;
@@ -674,19 +808,43 @@
     *{transition:none !important;}
   }
 </style>
+<script>
+  (function(){
+    var stored = localStorage.getItem('theme');
+    var theme = stored || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+  })();
+</script>
 </head>
 <body>
 
 <nav>
   <div class="nav-inner">
     <div class="nav-logo">K<span>·</span>BADAL</div>
-    <div class="nav-links">
-      <a href="#about">about</a>
-      <a href="#work">work</a>
-      <a href="#demo">audio</a>
-      <a href="#code">code</a>
-      <a href="#contact">contact</a>
+    <div class="nav-right">
+      <div class="nav-links">
+        <a href="#about">about</a>
+        <a href="#work">work</a>
+        <a href="#demo">audio</a>
+        <a href="#code">code</a>
+        <a href="#contact">contact</a>
+      </div>
+      <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
+        <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+      <button class="nav-hamburger" id="navHamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+        <svg class="icon-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+      </button>
     </div>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about">about</a>
+    <a href="#work">work</a>
+    <a href="#demo">audio</a>
+    <a href="#code">code</a>
+    <a href="#contact">contact</a>
   </div>
 </nav>
 
@@ -726,7 +884,7 @@
   </div>
 </section>
 
-<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 16 L400 16 L420 4 L440 28 L460 16 L980 16" stroke="#D8D2C3" stroke-width="1" fill="none"/></svg>
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 16 L400 16 L420 4 L440 28 L460 16 L980 16" stroke="currentColor" stroke-width="1" fill="none"/></svg>
 
 <!-- ============ ABOUT ============ -->
 <section id="about">
@@ -768,7 +926,7 @@
   </div>
 </section>
 
-<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
 
 <!-- ============ FEATURED PROJECTS ============ -->
 <section id="work">
@@ -878,7 +1036,7 @@
   </div>
 </section>
 
-<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
 
 <!-- ============ AUDIO DEMO ============ -->
 <section id="demo">
@@ -928,7 +1086,7 @@
   </audio>
 </section>
 
-<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
 
 <!-- ============ CODE PROJECTS ============ -->
 <section id="code">
@@ -954,7 +1112,7 @@
   </div>
 </section>
 
-<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
 
 <!-- ============ EXPERIENCE ============ -->
 <section id="experience">
@@ -1014,7 +1172,7 @@
   </div>
 </section>
 
-<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
 
 <!-- ============ EDUCATION ============ -->
 <section id="education">
@@ -1065,13 +1223,36 @@
   </div>
 </section>
 
-<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="#D8D2C3" stroke-width="1.5" fill="none"/></svg>
+<svg class="trace" viewBox="0 0 980 32" preserveAspectRatio="none"><path d="M0 15 Q245 18 490 15 T980 16" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
 
 <!-- ============ CONTACT ============ -->
 <section id="contact" class="contact-section">
   <div class="kicker" style="justify-content:center;">get in touch</div>
   <h2>Let's talk</h2>
   <p class="lede">Reach out for questions, collaboration, or a closer look at any of the work above.</p>
+
+  <!-- Replace with your own Formspree form endpoint: sign up free at
+       https://formspree.io, create a form, and swap YOUR_FORM_ID below. -->
+  <form class="contact-form" id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+    <div class="form-field">
+      <label for="cf-name">Name</label>
+      <input type="text" id="cf-name" name="name" required>
+    </div>
+    <div class="form-field">
+      <label for="cf-email">Email</label>
+      <input type="email" id="cf-email" name="email" required>
+    </div>
+    <div class="form-field">
+      <label for="cf-message">Message</label>
+      <textarea id="cf-message" name="message" rows="4" required></textarea>
+    </div>
+    <input type="hidden" name="_subject" value="New message from khalilbadal.dev">
+    <button class="form-submit" type="submit">Send message</button>
+    <p class="form-status" id="formStatus"></p>
+  </form>
+
+  <div class="contact-divider">— or reach out directly —</div>
+
   <div class="contact-links">
     <a class="contact-link" href="mailto:khalil.badal.eng@ust.edu.ph">khalil.badal.eng@ust.edu.ph</a>
     <a class="contact-link" href="mailto:khalilbadal04@gmail.com">khalilbadal04@gmail.com</a>
@@ -1233,6 +1414,77 @@
   lightbox.addEventListener('click', closeLightbox);
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') closeLightbox();
+  });
+
+  const themeToggle = document.getElementById('themeToggle');
+  const themeIconSun = document.getElementById('themeIconSun');
+  const themeIconMoon = document.getElementById('themeIconMoon');
+
+  function updateThemeIcon(){
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    themeIconSun.style.display = isDark ? 'block' : 'none';
+    themeIconMoon.style.display = isDark ? 'none' : 'block';
+  }
+  updateThemeIcon();
+
+  themeToggle.addEventListener('click', () => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    if (isDark){
+      document.documentElement.removeAttribute('data-theme');
+      localStorage.setItem('theme', 'light');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      localStorage.setItem('theme', 'dark');
+    }
+    updateThemeIcon();
+  });
+
+  const navHamburger = document.getElementById('navHamburger');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  navHamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    navHamburger.classList.toggle('open', isOpen);
+    navHamburger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      navHamburger.classList.remove('open');
+      navHamburger.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  const contactForm = document.getElementById('contactForm');
+  const formStatus = document.getElementById('formStatus');
+  const formSubmit = contactForm.querySelector('.form-submit');
+
+  contactForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    formSubmit.disabled = true;
+    formStatus.className = 'form-status';
+    formStatus.textContent = 'Sending…';
+
+    fetch(contactForm.action, {
+      method: 'POST',
+      body: new FormData(contactForm),
+      headers: { 'Accept': 'application/json' }
+    }).then(response => {
+      if (response.ok){
+        formStatus.className = 'form-status success';
+        formStatus.textContent = 'Message sent — thanks, I\'ll get back to you soon.';
+        contactForm.reset();
+      } else {
+        formStatus.className = 'form-status error';
+        formStatus.textContent = 'Form not connected yet — email me directly below instead.';
+      }
+    }).catch(() => {
+      formStatus.className = 'form-status error';
+      formStatus.textContent = 'Form not connected yet — email me directly below instead.';
+    }).finally(() => {
+      formSubmit.disabled = false;
+    });
   });
 </script>
 
