@@ -451,6 +451,30 @@
     font-size:12.5px;
     color:var(--muted);
   }
+  .repo-card-group:hover{
+    border-color:var(--border);
+    transform:none;
+  }
+  .repo-links{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:14px;
+  }
+  .repo-links a{
+    font-family:var(--mono);
+    font-size:11.5px;
+    color:var(--muted);
+    border:1px solid var(--border);
+    border-radius:5px;
+    padding:5px 9px;
+    display:inline-flex;
+    align-items:center;
+    gap:5px;
+    transition:border-color .2s, color .2s;
+  }
+  .repo-links a:hover{border-color:var(--brass);color:var(--brass);}
+  .repo-links a:focus-visible{outline:1px solid var(--brass);outline-offset:2px;}
 
   /* ===== EXPERIENCE / EDUCATION ===== */
   .timeline{
@@ -854,7 +878,7 @@
   <p class="lede">One clean guitar signal, run through Khyle Audio's plugin chain. Toggle between states to hear each plugin's contribution — only one clip plays at a time.</p>
 
   <div class="demo-box">
-    <div class="demo-flow">No effects <span class="arrow">→</span> Reverb added <span class="arrow">→</span> Delay added <span class="arrow">→</span> Full treatment</div>
+    <div class="demo-flow">No effects <span class="arrow">→</span> Reverb added <span class="arrow">→</span> Delay added <span class="arrow">→</span> Reverb + Delay added</div>
 
     <div class="demo-switcher" role="group" aria-label="Audio demo state switcher">
       <button class="demo-btn active" data-state="dry" aria-pressed="true">
@@ -913,22 +937,16 @@
       <div class="repo-name">Spotify Data Analysis <span class="repo-arrow">↗</span></div>
       <div class="repo-desc">Trends, correlations, and visualizations from Spotify streaming data using Python.</div>
     </a>
-    <a class="repo-card" href="https://github.com/khalil-badal/Experiment-1" target="_blank" rel="noopener">
-      <div class="repo-name">Experiment 1 <span class="repo-arrow">↗</span></div>
-      <div class="repo-desc">Applied Python programming exercise, ECE Advanced Programming course.</div>
-    </a>
-    <a class="repo-card" href="https://github.com/khalil-badal/Experiment-2" target="_blank" rel="noopener">
-      <div class="repo-name">Experiment 2 <span class="repo-arrow">↗</span></div>
-      <div class="repo-desc">Applied Python programming exercise, ECE Advanced Programming course.</div>
-    </a>
-    <a class="repo-card" href="https://github.com/khalil-badal/Experiment-3" target="_blank" rel="noopener">
-      <div class="repo-name">Experiment 3 <span class="repo-arrow">↗</span></div>
-      <div class="repo-desc">Applied Python programming exercise, ECE Advanced Programming course.</div>
-    </a>
-    <a class="repo-card" href="https://github.com/khalil-badal/Experiment-4" target="_blank" rel="noopener">
-      <div class="repo-name">Experiment 4 <span class="repo-arrow">↗</span></div>
-      <div class="repo-desc">Applied Python programming exercise, ECE Advanced Programming course.</div>
-    </a>
+    <div class="repo-card repo-card-group">
+      <div class="repo-name">UST ECE Advanced Programming Course</div>
+      <div class="repo-desc">Four applied Python programming exercises from coursework.</div>
+      <div class="repo-links">
+        <a href="https://github.com/khalil-badal/Experiment-1" target="_blank" rel="noopener">Exp. 1 <span class="repo-arrow">↗</span></a>
+        <a href="https://github.com/khalil-badal/Experiment-2" target="_blank" rel="noopener">Exp. 2 <span class="repo-arrow">↗</span></a>
+        <a href="https://github.com/khalil-badal/Experiment-3" target="_blank" rel="noopener">Exp. 3 <span class="repo-arrow">↗</span></a>
+        <a href="https://github.com/khalil-badal/Experiment-4" target="_blank" rel="noopener">Exp. 4 <span class="repo-arrow">↗</span></a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1052,7 +1070,7 @@
   </div>
 </section>
 
-<footer>Khalil T. Badal — built with intent, not a template.</footer>
+<footer>Khalil T. Badal</footer>
 
 <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Certificate viewer">
   <img id="lightboxImg" src="" alt="">
