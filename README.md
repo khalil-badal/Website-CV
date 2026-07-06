@@ -204,24 +204,32 @@ dependencies.
 
 ## 5. Assets
 
-All real, no placeholders remaining as of this writing.
+The original draft was built entirely around placeholders — five `<audio>`
+tags pointing at `.mp3` files that didn't exist yet, each marked with an
+HTML comment (`<!-- Replace with: ... -->`), plus a handful of gaps that
+weren't even stubbed out yet (no screenshots, no diagrams, certs listed as
+plain text). All of that has since been resolved:
 
-| Asset | Location | Source |
+| Item | Originally | Now |
 |---|---|---|
-| Rootbound / Pocket Tracer GUI screenshots | `assets/images/rootbound-gui.png`, `pockettracer-gui.png` | Plugin screenshots |
-| Thesis SARL-vs-MARL diagram | `assets/images/thesis-marl-diagram.png` | Cropped from the thesis manuscript PDF |
-| SAP-2 block diagram | `assets/images/mpu-block-diagram.png` | Extracted from the MPU project PDF |
-| RoboGear PGDX photo pair | `assets/images/robogear-pgdx-1.jpg`, `-2.jpg` | Converted from HEIC originals |
-| RoboGear nomination photo | `assets/images/robogear-nominee.jpg` (thumbnail crop), `robogear-nominee-full.jpg` (full, used in lightbox) | Event photo |
-| CCNA certificates | `assets/certs/ccna-intro-to-networks.png`, `ccna-switching-routing-wireless.png` | Cisco Networking Academy cert exports |
-| Khyle Audio demo clips | `dry-guitar.mp3`, `rootbound-guitar.mp3`, `pockettracer-guitar.mp3`, `both-guitar.mp3` (repo root) | Real guitar demo recordings |
-| RoboGear OST excerpt | `robogear-ost.mp3` (repo root) | Real OST excerpt |
+| Dry / Rootbound / Pocket Tracer / both-plugins demo clips | Placeholder `<audio>` tags, `<!-- Replace with: ... -->` comments, files didn't exist | Real recordings — `dry-guitar.mp3`, `rootbound-guitar.mp3`, `pockettracer-guitar.mp3`, `both-guitar.mp3` (repo root) |
+| RoboGear Auto OST excerpt | Same placeholder pattern, inline in the RoboGear entry | Real excerpt — `robogear-ost.mp3` (repo root) |
+| Rootbound / Pocket Tracer GUI | Not built yet, just discussed | Real plugin screenshots — `assets/images/rootbound-gui.png`, `pockettracer-gui.png` |
+| Thesis architecture figure | Not built yet, just discussed | SARL-vs-MARL diagram cropped from the thesis manuscript — `assets/images/thesis-marl-diagram.png` |
+| MPU diagram | Not built yet, just discussed | SAP-2 block diagram extracted from the project PDF — `assets/images/mpu-block-diagram.png` |
+| CCNA certs | Listed as plain text only in `#education` | Real cert images, each behind a thumbnail + lightbox — `assets/certs/ccna-intro-to-networks.png`, `ccna-switching-routing-wireless.png` |
+
+Two photos were added beyond the original placeholder list: the RoboGear PGDX
+photo pair (`assets/images/robogear-pgdx-1.jpg`, `-2.jpg`, converted from HEIC
+originals) and the Best Game Audio Design and Music nomination photo
+(`assets/images/robogear-nominee.jpg` thumbnail crop + `robogear-nominee-full.jpg`
+full image for the lightbox).
 
 All five audio files are referenced via relative `src` paths from the repo
 root — if any ever need replacing, just overwrite the file in place, no code
 changes needed.
 
-### Not yet added
+### Still not added
 - **Resume/CV PDF download link** near `#contact` — CVs exist in
   `source-material/` but aren't linked from the live site (not requested yet)
 - **Outbound links for the thesis and MPU project** — those two `#work`
