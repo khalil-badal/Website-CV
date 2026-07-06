@@ -8,12 +8,34 @@ Live at: `https://khalil-badal.github.io/Website-CV/` (GitHub Pages, deployed
 from `main`).
 
 The markup/styles/script live in one `index.html` — no build step, no JS
-framework, no dependencies beyond three Google Fonts. Open `index.html`
-directly in a browser, or run any static file server from the repo root.
+framework, no dependencies beyond three Google Fonts.
 
 ---
 
-## 1. Repo layout
+## 1. Getting started
+
+There's nothing to install or build. To preview locally:
+
+```
+# from the repo root
+python -m http.server 8080
+# then open http://localhost:8080
+```
+
+Opening `index.html` directly via `file://` mostly works too, but some
+browsers restrict `fetch`/audio behavior on `file://` URLs — a local server
+is the more reliable way to test the audio demo switcher and OST player.
+
+### Deployment
+GitHub Pages is configured in the repo's **Settings → Pages** as "Deploy from
+a branch," pointed at `main` / `(root)`. There's no GitHub Actions workflow —
+Pages rebuilds automatically a minute or two after any push to `main`. Since
+it's a single static file with no build step, that's the entire deploy
+pipeline.
+
+---
+
+## 2. Repo layout
 
 ```
 index.html              all markup, CSS, and JS (single file, see below)
@@ -22,7 +44,7 @@ README.md               this file
 assets/
   images/                photos, screenshots, extracted diagrams
   certs/                 CCNA certificate images
-dry-guitar.mp3           Khyle Audio demo clips (repo root, see §4)
+dry-guitar.mp3           Khyle Audio demo clips (repo root, see §6)
 rootbound-guitar.mp3
 pockettracer-guitar.mp3
 both-guitar.mp3
@@ -43,7 +65,7 @@ later, just not in version control.
 
 ---
 
-## 2. Design system — "Signal Chain"
+## 3. Design system — "Signal Chain"
 
 **Concept:** everything in Khalil's work is a signal moving through a system
 and being transformed — audio through a pedal, current through a circuit,
@@ -51,28 +73,35 @@ state through a policy network. Visual identity is inspired by boutique pedal
 brand websites (specifically **Chase Bliss Audio**): warm, craft-forward — not
 a clean corporate SaaS template.
 
-### Color palette (light theme)
+### Color palette
 
-All colors are CSS custom properties defined once in `:root`, at the top of
-the `<style>` block:
+All colors are CSS custom properties defined once in `:root` (light theme,
+the default) with a `[data-theme="dark"]` block overriding every one of them
+for dark mode — see §4 for how the toggle itself works.
 
-| Variable | Hex | Role |
-|---|---|---|
-| `--bg` | `#F5F2EA` | Page background (warm cream/paper) |
-| `--surface` | `#FFFFFF` | Card backgrounds |
-| `--surface-2` | `#EDE9DE` | Secondary surface (module tags, chips, players) |
-| `--text` | `#1A1815` | Primary text (near-black) |
-| `--muted` | `#4A453C` | Body copy / descriptions (high contrast, readable at length) |
-| `--dim` | `#756D5E` | Metadata only — nav links, tag chips, small labels |
-| `--brass` | `#3E6B63` | Primary accent — a dusty teal (variable name is a holdover from an earlier brass/gold iteration) |
-| `--rust` | `#B5502E` | Secondary accent — used on work module 2 (SAP-2) |
-| `--gold` | `#B98A2E` | Tertiary accent — used on work module 3 (Khyle Audio) |
-| `--border` | `#D8D2C3` | All borders, dividers, SVG divider strokes |
+| Variable | Light | Dark | Role |
+|---|---|---|---|
+| `--bg` | `#F5F2EA` | `#1B1914` | Page background |
+| `--surface` | `#FFFFFF` | `#242119` | Card backgrounds |
+| `--surface-2` | `#EDE9DE` | `#2E2A20` | Secondary surface (module tags, chips, players, form inputs) |
+| `--text` | `#1A1815` | `#F2EEE2` | Primary text |
+| `--muted` | `#4A453C` | `#C7C0AE` | Body copy / descriptions (high contrast, readable at length) |
+| `--dim` | `#756D5E` | `#8D8570` | Metadata only — nav links, tag chips, small labels |
+| `--brass` | `#3E6B63` | `#5EA394` | Primary accent (dusty teal in light, brightened for dark-bg contrast) |
+| `--rust` | `#B5502E` | `#E2825A` | Secondary accent — work module 2 (SAP-2), form error state |
+| `--gold` | `#B98A2E` | `#E3B15A` | Tertiary accent — work module 3 (Khyle Audio) |
+| `--border` | `#D8D2C3` | `#3A3527` | All borders, dividers, SVG divider strokes |
+
+`--bg-rgb` and `--brass-rgb` also exist (the same colors as R,G,B triplets,
+no `rgb()`/`#` wrapper) specifically so a couple of translucent
+`rgba(var(--bg-rgb),0.88)` / `rgba(var(--brass-rgb),0.08)` uses (the nav
+backdrop blur tint, and the active demo-button tint) can react to the theme
+without being hardcoded. This used to be a "known fragile spot" — see §4.
 
 **Contrast rule of thumb:** `--muted` is for anything meant to be *read*
 (paragraphs, descriptions, timeline entries). `--dim` is only for
 decorative/secondary chrome (nav links, tiny tag labels) — never for
-sentence-length copy.
+sentence-length copy. This holds in both themes.
 
 **Module accent stripes:** each card in `#work` gets a 4px colored left
 border via a `--module-accent` custom property, overridden per card with
@@ -81,17 +110,6 @@ teal, module 2 (SAP-2) is rust, module 3 (Khyle Audio) is gold. This was added
 specifically to break up what was originally an all-white/cream `#work`
 section; the same pattern (a CSS variable overridden by `:nth-child`) is the
 easiest way to add a 4th color if a 4th module is ever added.
-
-⚠️ **Known fragile spot:** a handful of decorative SVG elements are
-**hardcoded hex/rgba values**, not CSS variables, because inline SVG `stroke`
-attributes and `rgba()` washes can't reference CSS custom properties directly
-in all the contexts used here. If you change `--border` or `--brass`, grep
-for and update:
-- `stroke="#D8D2C3"` (7 instances — the wavy section dividers between sections)
-- `rgba(62,107,99,` (1 instance — the active-state tint on `.demo-btn.active`)
-
-(The hero illustration that used to need its own hardcoded `stroke="#3E6B63"`
-entry here was removed — see §6.)
 
 ### Typography
 
@@ -102,7 +120,8 @@ Three font families, each with a distinct job — don't blur these roles:
   (`.nav-logo`). Uppercase, bold (800 weight), tight line-height. This is the
   one place the site gets loud/distinctive.
 - **`--mono`: 'Space Mono'** — used for labels, nav links, kickers, tags,
-  module metadata, buttons. This is the "technical readout" voice.
+  module metadata, buttons, form labels. This is the "technical readout"
+  voice.
 - **`--sans`: 'Inter'** — used for actual body copy / paragraphs. This is the
   "just let me read it" voice.
 
@@ -114,15 +133,51 @@ If deploying somewhere with strict CSP or wanting to go fully offline,
 self-host these three families instead.
 
 ### Background texture
-
 `body` has a repeating SVG data-URI circuit-trace pattern (right-angle traces
-+ via dots) at **35% opacity**, tiled at 160×160px, in `--border` color. If it
-ever creeps back to feeling loud, drop the `opacity` value inside the SVG
-`<g>` tag (currently `0.35`) rather than fighting it with darker text.
++ via dots), tiled at 160×160px, in `--border` color — 35% opacity in light
+mode, 45% in dark mode (needed a touch more to stay visible against the dark
+background without looking noisy). There are two separate data-URIs, one
+per theme (see `[data-theme="dark"] body` in the CSS) — a data-URI
+`background-image` can't reference a CSS custom property internally, so this
+couldn't be done with one URI plus a variable.
 
 ---
 
-## 3. Page structure
+## 4. Dark mode
+
+Toggle button lives in the nav (sun/moon icon, immediately left of the mobile
+hamburger). Mechanics:
+
+- **No flash of the wrong theme:** a tiny inline `<script>` right before
+  `</head>` reads `localStorage.theme` (falling back to
+  `prefers-color-scheme: dark` if nothing's stored yet) and sets
+  `data-theme="dark"` on `<html>` *before* the page paints. The full toggle
+  logic (click handler, icon swap, `localStorage` write) lives in the main
+  script at the bottom of `<body>`, same as everything else.
+- **Everything is a CSS variable.** Flipping `data-theme` on `<html>` is
+  enough for the vast majority of the page — see §3's palette table.
+- **The two exceptions that needed real work:** the 7 wavy `<svg class="trace">`
+  section dividers used to have a literal `stroke="#D8D2C3"` hardcoded in the
+  markup (inline SVG attributes can't read CSS custom properties), and two
+  `rgba()` values (the nav backdrop tint, the active demo-button tint) were
+  hardcoded RGB triplets. Fixed by: giving the dividers `stroke="currentColor"`
+  plus a `.trace{color:var(--border);}` rule (SVG `currentColor` *does*
+  inherit from the CSS `color` property, so this reacts to the theme
+  normally), and adding `--bg-rgb`/`--brass-rgb` variables holding the same
+  colors as bare `R,G,B` triplets for the `rgba()` cases. If you add another
+  hardcoded-color decorative element in the future, follow one of these two
+  patterns rather than hardcoding a hex value again.
+
+If you ever debug dark mode and it looks stuck on the wrong theme: check
+`localStorage.getItem('theme')` and `document.documentElement.getAttribute('data-theme')`
+directly rather than trusting a quick visual glance after a soft reload — in
+testing, a plain `location.reload()` occasionally appeared to serve a stale
+cached render immediately afterward; a hard navigation (or just trusting what
+a real user's browser does on a normal page load) reflects the real behavior.
+
+---
+
+## 5. Page structure
 
 Single HTML file, sections in this order (see `<section id="...">` tags):
 
@@ -146,37 +201,50 @@ Single HTML file, sections in this order (see `<section id="...">` tags):
    NEES
 7. `#education` ("Foundations") — Timeline: UST, Romblon State University,
    2 CCNA certs (thumbnail + lightbox each)
-8. `#contact` ("Let's talk") — Email / GitHub links
+8. `#contact` ("Let's talk") — real contact form (see §7) + email/GitHub
+   links as a fallback
 
-A fixed **left-side table of contents** (`<aside class="toc">`) sits outside
-this flow, scroll-spies the sections above, and highlights the active one.
-It's desktop-only (hidden at ≤1180px viewport width, confirmed via testing at
-1180/1200px) since a fixed left rail needs real screen real estate; the
-sticky top nav (`<nav>` → `.nav-links`) handles navigation on narrower
-screens.
+### Navigation — three layers depending on viewport width
+- **≥1180px:** fixed left-side table of contents (`<aside class="toc">`),
+  scroll-spies the sections above and highlights the active one.
+- **641px–1180px:** sidebar TOC hides (no room for a fixed rail); the sticky
+  top nav's inline link row (`.nav-links`) is visible instead.
+- **≤640px:** the inline link row *also* hides — there genuinely isn't room
+  for `about / work / audio / code / contact` in one line at phone widths.
+  A hamburger button (`.nav-hamburger`) appears instead and opens
+  `#mobileMenu`, a full-width dropdown with the same 5 links, closing again
+  on any link click. **This was a real gap until it was added** — for a
+  while, phones (which are almost always under 640px wide) had no on-page
+  navigation at all, just the logo and whatever you could reach by
+  scrolling. If you resize the nav breakpoints in the future, make sure all
+  three layers still hand off to each other with no dead zone in between.
 
 ---
 
-## 4. Interactive features
+## 6. Interactive features
 
 ### A. Khyle Audio demo switcher (`#demo`)
 Four buttons toggle between four `<audio>` elements (dry / Rootbound /
 Pocket Tracer / both). Only one clip plays at a time — clicking a new state
 stops whatever's currently playing and starts the new clip from `0`. Active
 button gets teal border + highlighted label. Status text and a small dot
-indicator show playing/paused/finished state. All 5 audio files are real
-(see §5) — no placeholders remain.
+indicator show playing/paused/finished state. All 5 audio files are real —
+no placeholders remain (see §8).
 
 ### B. RoboGear Auto OST player (inside `#experience`)
 A compact inline play/pause button + track title + status text, styled as a
 small pill component (`.ost-player`). Coordinated with the demo switcher
 above so **only one audio source plays across the whole site at a time** —
 starting the OST pauses any active demo clip and resets its UI, and vice
-versa. (Verified: clicking through both rapidly in the same session can look
-like it's misbehaving during manual/scripted testing due to promise timing —
-if debugging this, always confirm with a genuinely fresh page load rather
-than a soft reload, and check actual `<audio>`.paused state, not just the UI
-text.)
+versa.
+
+**Browser autoplay note:** both this and the demo switcher call
+`audio.play()` directly inside a click handler, which is exactly what
+browser autoplay policies require (a direct user gesture) — this works
+correctly in real usage. It's only automated/scripted testing (calling
+`.click()` via devtools/CDP rather than a real pointer event) where you might
+see `play()` silently fail or resolve out of order; don't mistake that for a
+real bug without testing with an actual click first.
 
 ### C. Certificate / proof-photo lightbox
 A single reusable component (`.cert-thumb` + `#lightbox`): any button with
@@ -197,12 +265,42 @@ currently over (using each section's `offsetTop` vs. scroll position + 35% of
 viewport height as the trigger line) and toggles `.active` on the matching
 `.toc-link`.
 
-All JS lives in one `<script>` block at the end of `<body>`. No external JS
-dependencies.
+### E. Dark mode toggle
+See §4.
+
+### F. Mobile nav menu
+See §5.
+
+All JS lives in one `<script>` block at the end of `<body>`, plus one tiny
+inline script before `</head>` for the pre-paint dark-mode check (see §4). No
+external JS dependencies.
 
 ---
 
-## 5. Assets
+## 7. Contact form
+
+`#contact` has a real `<form>` (name / email / message) that POSTs to
+[Formspree](https://formspree.io) via `fetch` (no page navigation — inline
+"Sending…" / success / error status text instead). Mailto links remain below
+it as a fallback that always works regardless of form config.
+
+**Setup required:** the form's `action` currently points at a placeholder —
+`https://formspree.io/f/YOUR_FORM_ID`, clearly marked with an HTML comment
+right above the `<form>` tag. To make it actually deliver messages:
+
+1. Create a free account at [formspree.io](https://formspree.io)
+2. Create a new form, copy the endpoint URL it gives you
+   (`https://formspree.io/f/xxxxxxxx`)
+3. Replace `YOUR_FORM_ID` in the `action` attribute with that ID
+4. That's it — no other code changes needed. Formspree's free tier includes
+   basic spam filtering.
+
+Until that's done, submitting the form shows "Form not connected yet — email
+me directly below instead" rather than silently failing or looking broken.
+
+---
+
+## 8. Assets
 
 The original draft was built entirely around placeholders — five `<audio>`
 tags pointing at `.mp3` files that didn't exist yet, each marked with an
@@ -238,7 +336,7 @@ changes needed.
 
 ---
 
-## 6. Extending the site
+## 9. Extending the site
 
 - **Adding a new project module:** copy one `.module` block inside `#work`,
   update the `.module-tag` (`<span class="tag-label">`) and, if it's a team
@@ -246,18 +344,24 @@ changes needed.
   `text-transform: lowercase` to a container that also holds proper names
   (this was a real bug caught during development — see below). If you want a
   distinct accent color for the new module, add a 4th color variable in
-  `:root` and a `.module:nth-child(4){--module-accent:var(--your-color);}`
-  rule (see §2).
-- **Adding a new nav/TOC section:** add the link to both `.nav-links` (top
-  nav) and `.toc-inner` (sidebar), matching `href="#id"` /
-  `data-section="id"` to a real `<section id="id">` elsewhere in the page.
+  `:root` **and** its dark-mode override in `[data-theme="dark"]`, then a
+  `.module:nth-child(4){--module-accent:var(--your-color);}` rule (see §3).
+- **Adding a new nav/TOC section:** add the link to `.nav-links` (top nav),
+  `.toc-inner` (sidebar), *and* `#mobileMenu` (mobile dropdown) — all three
+  need to match `href="#id"` / `data-section="id"` to a real
+  `<section id="id">` elsewhere in the page. It's easy to update the first
+  two and forget the mobile menu since it's not visible at desktop widths
+  while you're editing.
 - **Adding a new lightbox-able thumbnail:** reuse `.cert-thumb` — give the
   button `data-cert-src` (the image to show full-size) and `data-cert-alt`;
   the existing JS picks up any `.cert-thumb` on the page automatically, no
-  script changes needed. See §4C for the crop-vs-full-image convention.
-- **Changing the accent colors:** update `--brass`/`--rust`/`--gold` in
-  `:root`, then grep for the hardcoded hex/rgba values listed in the "Known
-  fragile spot" note in §2 and update those too.
+  script changes needed. See §6C for the crop-vs-full-image convention.
+- **Changing the accent colors:** update `--brass`/`--rust`/`--gold` **in
+  both** the `:root` and `[data-theme="dark"]` blocks. Both need updating
+  together or the two themes will drift out of sync with each other.
+- **Adding a new hardcoded-looking decorative color:** don't — see §4's note
+  on `currentColor` and the `--*-rgb` variable pattern, which exist
+  specifically so this doesn't need to happen again.
 
 ### Bugs already found and fixed during development (don't reintroduce these)
 
@@ -271,22 +375,33 @@ changes needed.
 3. **Missing `background` on the `html` element** (only `body` had one)
    caused white bleed at the top of the page on some mobile browsers when
    content didn't fully fill the viewport.
+4. **Hardcoded SVG `stroke`/`rgba()` colors** (the section dividers, the nav
+   backdrop tint, the active demo-button tint) silently drifted out of sync
+   whenever `--border`/`--bg`/`--brass` changed, since inline SVG attributes
+   and literal `rgba()` triplets can't read CSS custom properties. This
+   became a real blocker once dark mode needed those same elements to
+   re-theme correctly. Fixed via `currentColor` (for SVG strokes, which
+   *does* respect the inherited CSS `color` property) and `--bg-rgb` /
+   `--brass-rgb` variables holding bare RGB triplets for the `rgba()` cases.
+   See §4.
 
 ---
 
-## 7. Known limitations / not done yet
+## 10. Known limitations / not done yet
 
-- No contact form (mailto: links only — intentional, kept simple)
-- No dark mode toggle (site is light-theme only)
 - No build tooling, bundler, or minification — this is meant to stay a
   single portable file unless it grows enough to justify splitting into
   `index.html` / `styles.css` / `script.js`
+- Contact form needs a real Formspree form ID before it actually delivers
+  messages (see §7) — currently shows a graceful "not connected yet" message
+  instead of silently failing
 - Desktop-width testing (1024/1180/1200/1280/1440/1920px) and mobile
-  (375px) has been done — no known layout breakage at any tested breakpoint
+  (375px) has been done — no known layout breakage at any tested breakpoint,
+  in both light and dark mode
 
 ---
 
-## 8. Credits / attribution notes baked into the content
+## 11. Credits / attribution notes baked into the content
 
 - MARL thesis (`#work`, module 1) is a 5-person team project, currently at
   the development stage (proposal complete) — Badal, Lopez, Mananguit,
@@ -308,6 +423,13 @@ changes needed.
   several collaborating sound engineers, and that the Best Sound Design
   nomination is separate from (concurrent with) the studio's own Best Mobile
   Game win — don't conflate the two, or blur "nominee" into "winner."
+- The About section deliberately does **not** frame Khalil as specializing
+  in "software that interacts closely with hardware" — an earlier draft said
+  this, but it doesn't actually hold up for the VST plugin work (pure
+  software, no real hardware interfacing) and undersold the actual
+  software/AI ambition. His EE/ECE background is framed as an asset
+  (grounding in lower-level systems than most software engineers deal with),
+  not as the specialization itself.
 
 Keep this framing intact in any future copy edits — none of it is
 incidental; each distinction above was a deliberate correction made during
