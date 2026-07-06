@@ -65,7 +65,7 @@ later, just not in version control.
 
 ---
 
-## 3. Design system — "Signal Chain"
+## 3. Design system
 
 **Concept:** everything in Khalil's work is a signal moving through a system
 and being transformed — audio through a pedal, current through a circuit,
