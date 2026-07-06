@@ -1,22 +1,55 @@
 # Khalil Badal — Portfolio Site
 
-A single-file, self-contained portfolio site (`index.html`) for Khalil T. Badal —
-Electronics Engineering student at UST, spanning reinforcement learning /
-software work, hardware/circuit design, and audio DSP under the "Khyle Audio"
-brand.
+A portfolio site for Khalil T. Badal — Electronics Engineering student at UST,
+spanning reinforcement learning / software work, digital hardware design, and
+audio DSP under the "Khyle Audio" brand.
 
-No build step. No dependencies beyond two Google Fonts CDN links. Open
-`index.html` directly in any browser.
+Live at: `https://khalil-badal.github.io/Website-CV/` (GitHub Pages, deployed
+from `main`).
+
+The markup/styles/script live in one `index.html` — no build step, no JS
+framework, no dependencies beyond three Google Fonts. Open `index.html`
+directly in a browser, or run any static file server from the repo root.
 
 ---
 
-## 1. Design system — "Signal Chain"
+## 1. Repo layout
+
+```
+index.html              all markup, CSS, and JS (single file, see below)
+README.md               this file
+.gitignore
+assets/
+  images/                photos, screenshots, extracted diagrams
+  certs/                 CCNA certificate images
+dry-guitar.mp3           Khyle Audio demo clips (repo root, see §4)
+rootbound-guitar.mp3
+pockettracer-guitar.mp3
+both-guitar.mp3
+robogear-ost.mp3
+source-material/         gitignored — raw originals (PDFs, HEIC photos, CVs)
+                         used to produce the assets/ files. Not needed for
+                         deployment; kept locally for reference only.
+```
+
+**Why one HTML file:** the site is small enough that splitting into
+`index.html` / `styles.css` / `script.js` wouldn't meaningfully help
+maintainability yet. Revisit if it keeps growing.
+
+**Why `source-material/` is gitignored:** those are raw inputs (a 9MB PDF, HEIC
+originals, CVs) used once to produce the actual web assets — not needed to
+build or deploy the site. They stay on disk for anyone extending the project
+later, just not in version control.
+
+---
+
+## 2. Design system — "Signal Chain"
 
 **Concept:** everything in Khalil's work is a signal moving through a system
 and being transformed — audio through a pedal, current through a circuit,
 state through a policy network. Visual identity is inspired by boutique pedal
-brand websites (specifically **Chase Bliss Audio**): warm, illustrated,
-craft-forward — not a clean corporate SaaS template.
+brand websites (specifically **Chase Bliss Audio**): warm, craft-forward — not
+a clean corporate SaaS template.
 
 ### Color palette (light theme)
 
@@ -31,37 +64,45 @@ the `<style>` block:
 | `--text` | `#1A1815` | Primary text (near-black) |
 | `--muted` | `#4A453C` | Body copy / descriptions (high contrast, readable at length) |
 | `--dim` | `#756D5E` | Metadata only — nav links, tag chips, small labels |
-| `--brass` | `#3E6B63` | Accent color — currently a dusty teal (variable name is a holdover from an earlier brass/gold iteration; rename if it bothers future-you) |
+| `--brass` | `#3E6B63` | Primary accent — a dusty teal (variable name is a holdover from an earlier brass/gold iteration) |
+| `--rust` | `#B5502E` | Secondary accent — used on work module 2 (SAP-2) |
+| `--gold` | `#B98A2E` | Tertiary accent — used on work module 3 (Khyle Audio) |
 | `--border` | `#D8D2C3` | All borders, dividers, SVG divider strokes |
 
 **Contrast rule of thumb:** `--muted` is for anything meant to be *read*
 (paragraphs, descriptions, timeline entries). `--dim` is only for
 decorative/secondary chrome (nav links, tiny tag labels) — never for
-sentence-length copy. This distinction was added after early drafts had body
-text sitting on too-low-contrast values.
+sentence-length copy.
 
-⚠️ **Known fragile spot:** a few decorative elements (SVG divider strokes,
-the hero illustration stroke color, two `rgba()` opacity washes) are
-**hardcoded hex/rgb values**, not CSS variables, because inline SVG `stroke`
-attributes and some `rgba()` washes can't reference CSS custom properties
-directly in all contexts used here. If you change `--brass` or `--border`,
-search the file for:
-- `stroke="#D8D2C3"` (7 instances, the wavy section dividers)
-- `stroke="#3E6B63"` (1 instance, the hero pedal illustration)
-- `rgba(62,107,99,` (2 instances, teal opacity washes)
+**Module accent stripes:** each card in `#work` gets a 4px colored left
+border via a `--module-accent` custom property, overridden per card with
+`.module:nth-child(2)` / `nth-child(3)` — module 1 (thesis) stays the default
+teal, module 2 (SAP-2) is rust, module 3 (Khyle Audio) is gold. This was added
+specifically to break up what was originally an all-white/cream `#work`
+section; the same pattern (a CSS variable overridden by `:nth-child`) is the
+easiest way to add a 4th color if a 4th module is ever added.
 
-and update them to match, or they'll silently drift out of sync with the
-palette.
+⚠️ **Known fragile spot:** a handful of decorative SVG elements are
+**hardcoded hex/rgba values**, not CSS variables, because inline SVG `stroke`
+attributes and `rgba()` washes can't reference CSS custom properties directly
+in all the contexts used here. If you change `--border` or `--brass`, grep
+for and update:
+- `stroke="#D8D2C3"` (7 instances — the wavy section dividers between sections)
+- `rgba(62,107,99,` (1 instance — the active-state tint on `.demo-btn.active`)
+
+(The hero illustration that used to need its own hardcoded `stroke="#3E6B63"`
+entry here was removed — see §6.)
 
 ### Typography
 
 Three font families, each with a distinct job — don't blur these roles:
 
 - **`--display`: 'Big Shoulders Display'** (condensed, industrial, "amp
-  faceplate" feel) — used only for `h1`, `h2`, `h3`. Uppercase, bold (800
-  weight), tight line-height. This is the one place the site gets loud.
-- **`--mono`: 'Space Mono'** — used for labels, nav, kickers, tags, module
-  metadata, buttons. This is the "technical readout" voice.
+  faceplate" feel) — used for `h1`/`h2`/`h3` and the nav wordmark
+  (`.nav-logo`). Uppercase, bold (800 weight), tight line-height. This is the
+  one place the site gets loud/distinctive.
+- **`--mono`: 'Space Mono'** — used for labels, nav links, kickers, tags,
+  module metadata, buttons. This is the "technical readout" voice.
 - **`--sans`: 'Inter'** — used for actual body copy / paragraphs. This is the
   "just let me read it" voice.
 
@@ -74,126 +115,141 @@ self-host these three families instead.
 
 ### Background texture
 
-`body` has a repeating SVG data-URI circuit-trace pattern (right-angle
-traces + via dots) at **35% opacity**, tiled at 160×160px, in `--border`
-color. This was intentionally dialed down from an earlier full-opacity pass
-that felt too busy — if it ever creeps back to feeling loud, drop the
-`opacity` value inside the SVG `<g>` tag further (currently `0.35`), don't
-just fight it with darker text.
-
-### Signature illustration
-
-The hero includes one hand-drawn-style line-art illustration (a stompbox
-pedal with knobs, footswitch, and loose signal-trace squiggles), drawn
-directly as inline SVG in the teal accent color. This is deliberately the
-**one bold illustrated moment** on the page — per Chase Bliss's own
-restraint, the rest of the site doesn't try to compete with it with more
-illustrations. If adding future illustrations, keep that principle: one
-signature moment per major section at most, not decoration everywhere.
+`body` has a repeating SVG data-URI circuit-trace pattern (right-angle traces
++ via dots) at **35% opacity**, tiled at 160×160px, in `--border` color. If it
+ever creeps back to feeling loud, drop the `opacity` value inside the SVG
+`<g>` tag (currently `0.35`) rather than fighting it with darker text.
 
 ---
 
-## 2. Page structure
+## 3. Page structure
 
 Single HTML file, sections in this order (see `<section id="...">` tags):
 
-1. `#top` — Hero (name, one-line identity, pedal illustration, contact links)
-2. `#about` — Bio bridging EE / RL / audio threads
-3. `#work` — Three featured project "modules": MARL thesis, MPU
-   microprocessor design, Khyle Audio plugin suite
-4. `#demo` — "Hear My Plugins" interactive 4-state audio switcher (Rootbound
-   / Pocket Tracer / both / dry)
-5. `#code` — 5 GitHub repo cards
-6. `#experience` — Timeline: RoboGear Auto (with inline OST player), UST
-   Tiger TV, UST NEES
-7. `#education` — Timeline: UST, Romblon State University, CCNA certs
-8. `#contact` — Email / GitHub links
+1. `#top` — Hero (name, one-line identity, contact links). No illustration —
+   an earlier draft had a hand-drawn pedal SVG here; it was cut for feeling
+   like an unnecessary flourish, and the hero grid collapsed to a single
+   full-width text column rather than replaced with something else.
+2. `#about` ("Background") — bio in first person, split across a two-column
+   grid (4 short paragraphs + skill tags)
+3. `#work` ("Modules") — three featured project cards: MARL thesis (teal
+   accent), SAP-2 microprocessor design (rust accent), Khyle Audio plugin
+   suite (gold accent). Each includes a supporting figure/screenshot.
+4. `#demo` ("Khyle Audio demo") — "Hear My Plugins" interactive 4-state audio
+   switcher (Rootbound / Pocket Tracer / both / dry)
+5. `#code` ("From GitHub") — 2 repo cards: Spotify Data Analysis (own
+   description), and a consolidated "UST ECE Advanced Programming Course"
+   card linking out to 4 near-identical coursework exercises (`Exp. 1`–`Exp.
+   4`) rather than 4 separate cards with duplicate descriptions
+6. `#experience` ("Track record") — Timeline: RoboGear Auto (OST player +
+   PGDX photo pair + nomination-proof lightbox thumbnail), UST Tiger TV, UST
+   NEES
+7. `#education` ("Foundations") — Timeline: UST, Romblon State University,
+   2 CCNA certs (thumbnail + lightbox each)
+8. `#contact` ("Let's talk") — Email / GitHub links
 
 A fixed **left-side table of contents** (`<aside class="toc">`) sits outside
 this flow, scroll-spies the sections above, and highlights the active one.
-It's desktop-only (hidden below `1180px` viewport width) since a fixed left
-rail needs real screen real estate; the existing sticky top nav
-(`<nav>` → `.nav-links`) handles navigation on narrower screens.
+It's desktop-only (hidden at ≤1180px viewport width, confirmed via testing at
+1180/1200px) since a fixed left rail needs real screen real estate; the
+sticky top nav (`<nav>` → `.nav-links`) handles navigation on narrower
+screens.
 
 ---
 
-## 3. Interactive features
+## 4. Interactive features
 
 ### A. Khyle Audio demo switcher (`#demo`)
 Four buttons toggle between four `<audio>` elements (dry / Rootbound /
 Pocket Tracer / both). Only one clip plays at a time — clicking a new state
 stops whatever's currently playing and starts the new clip from `0`. Active
 button gets teal border + highlighted label. Status text and a small dot
-indicator show playing/paused/finished state.
+indicator show playing/paused/finished state. All 5 audio files are real
+(see §5) — no placeholders remain.
 
 ### B. RoboGear Auto OST player (inside `#experience`)
 A compact inline play/pause button + track title + status text, styled as a
 small pill component (`.ost-player`). Coordinated with the demo switcher
 above so **only one audio source plays across the whole site at a time** —
 starting the OST pauses any active demo clip and resets its UI, and vice
-versa.
+versa. (Verified: clicking through both rapidly in the same session can look
+like it's misbehaving during manual/scripted testing due to promise timing —
+if debugging this, always confirm with a genuinely fresh page load rather
+than a soft reload, and check actual `<audio>`.paused state, not just the UI
+text.)
 
-### C. Scroll-spy table of contents
-Plain JS, no framework — on scroll, calculates which section the viewport
-is currently over (using each section's `offsetTop` vs. scroll position +
-35% of viewport height as the trigger line) and toggles `.active` on the
-matching `.toc-link`.
+### C. Certificate / proof-photo lightbox
+A single reusable component (`.cert-thumb` + `#lightbox`): any button with
+`data-cert-src` / `data-cert-alt` attributes shows a small thumbnail that,
+when clicked, opens a full-screen overlay with the full image; clicking
+anywhere (or pressing Escape) closes it. Currently used in 3 places — the 2
+CCNA certs in `#education`, and the Best Game Audio Design and Music
+nomination photo in `#experience`. The RoboGear entry deliberately uses a
+tightly-cropped image for the small thumbnail but points `data-cert-src` at
+the full uncropped photo (crowd included) for the expanded view, since the
+crowd is part of what makes it read as proof the event happened. Follow that
+same pattern (cropped thumbnail, full image on expand) for any future
+addition to this component.
+
+### D. Scroll-spy table of contents
+Plain JS, no framework — on scroll, calculates which section the viewport is
+currently over (using each section's `offsetTop` vs. scroll position + 35% of
+viewport height as the trigger line) and toggles `.active` on the matching
+`.toc-link`.
 
 All JS lives in one `<script>` block at the end of `<body>`. No external JS
 dependencies.
 
 ---
 
-## 4. Placeholder assets to swap in
+## 5. Assets
 
-These are the only things standing between this draft and a fully "real"
-site. Each has a clearly marked HTML comment at its location in the file —
-search for `<!-- Replace with:` to find all of them.
+All real, no placeholders remaining as of this writing.
 
-| Placeholder | Expected filename | Location |
+| Asset | Location | Source |
 |---|---|---|
-| Dry guitar clip | `dry-guitar.mp3` | `#demo` section |
-| Rootbound demo clip | `rootbound-guitar.mp3` | `#demo` section |
-| Pocket Tracer demo clip | `pockettracer-guitar.mp3` | `#demo` section |
-| Both-plugins demo clip | `both-guitar.mp3` | `#demo` section |
-| RoboGear Auto OST excerpt | `robogear-ost.mp3` | `#experience`, inline in RoboGear entry |
+| Rootbound / Pocket Tracer GUI screenshots | `assets/images/rootbound-gui.png`, `pockettracer-gui.png` | Plugin screenshots |
+| Thesis SARL-vs-MARL diagram | `assets/images/thesis-marl-diagram.png` | Cropped from the thesis manuscript PDF |
+| SAP-2 block diagram | `assets/images/mpu-block-diagram.png` | Extracted from the MPU project PDF |
+| RoboGear PGDX photo pair | `assets/images/robogear-pgdx-1.jpg`, `-2.jpg` | Converted from HEIC originals |
+| RoboGear nomination photo | `assets/images/robogear-nominee.jpg` (thumbnail crop), `robogear-nominee-full.jpg` (full, used in lightbox) | Event photo |
+| CCNA certificates | `assets/certs/ccna-intro-to-networks.png`, `ccna-switching-routing-wireless.png` | Cisco Networking Academy cert exports |
+| Khyle Audio demo clips | `dry-guitar.mp3`, `rootbound-guitar.mp3`, `pockettracer-guitar.mp3`, `both-guitar.mp3` (repo root) | Real guitar demo recordings |
+| RoboGear OST excerpt | `robogear-ost.mp3` (repo root) | Real OST excerpt |
 
-All five are referenced via relative `src` paths, so just drop the actual
-audio files in the same folder as `index.html` and they'll work with zero
-code changes.
+All five audio files are referenced via relative `src` paths from the repo
+root — if any ever need replacing, just overwrite the file in place, no code
+changes needed.
 
-### Not yet placeholder-stubbed, but worth adding (discussed, not yet built)
-
-- **Plugin GUI screenshots** for Rootbound / Pocket Tracer in the Khyle Audio
-  module card (`#work`, module 3)
-- **A chart or figure from the thesis manuscript** (e.g. the SARL vs. MARL
-  architecture diagram, or the Stage A ideal-condition results chart) in the
-  MARL thesis module card (`#work`, module 1)
-- **A diagram/photo from the MPU project** (architecture block diagram,
-  simulation output) in the MPU module card (`#work`, module 2)
-- **Cisco certificate images/PDFs** — currently the `#education` section only
-  lists CCNA certs as text; consider linking to or embedding the actual
-  certificates
-- **Resume/CV PDF download link** near `#contact`
-- **Outbound links for the thesis and MPU project** — right now those two
-  modules have no link out (unlike the GitHub cards), since there's no public
-  repo or hosted PDF for either yet
+### Not yet added
+- **Resume/CV PDF download link** near `#contact` — CVs exist in
+  `source-material/` but aren't linked from the live site (not requested yet)
+- **Outbound links for the thesis and MPU project** — those two `#work`
+  modules have no link out (unlike the GitHub cards and Khyle Audio), since
+  there's no public repo or hosted PDF for either yet
 
 ---
 
-## 5. Extending the site
+## 6. Extending the site
 
 - **Adding a new project module:** copy one `.module` block inside `#work`,
   update the `.module-tag` (`<span class="tag-label">`) and, if it's a team
   project, the `.team` span with real names — do **not** apply
   `text-transform: lowercase` to a container that also holds proper names
-  (this was a real bug caught during development — see note below).
+  (this was a real bug caught during development — see below). If you want a
+  distinct accent color for the new module, add a 4th color variable in
+  `:root` and a `.module:nth-child(4){--module-accent:var(--your-color);}`
+  rule (see §2).
 - **Adding a new nav/TOC section:** add the link to both `.nav-links` (top
   nav) and `.toc-inner` (sidebar), matching `href="#id"` /
   `data-section="id"` to a real `<section id="id">` elsewhere in the page.
-- **Changing the accent color:** update `--brass` in `:root`, then grep for
-  the hardcoded hex/rgba values listed in the "Known fragile spot" note above
-  and update those too.
+- **Adding a new lightbox-able thumbnail:** reuse `.cert-thumb` — give the
+  button `data-cert-src` (the image to show full-size) and `data-cert-alt`;
+  the existing JS picks up any `.cert-thumb` on the page automatically, no
+  script changes needed. See §4C for the crop-vs-full-image convention.
+- **Changing the accent colors:** update `--brass`/`--rust`/`--gold` in
+  `:root`, then grep for the hardcoded hex/rgba values listed in the "Known
+  fragile spot" note in §2 and update those too.
 
 ### Bugs already found and fixed during development (don't reintroduce these)
 
@@ -210,35 +266,41 @@ code changes.
 
 ---
 
-## 6. Known limitations / not done yet
+## 7. Known limitations / not done yet
 
 - No contact form (mailto: links only — intentional, kept simple)
-- No dark mode toggle (site is light-theme only; an earlier dark/beige-on-
-  black iteration was scrapped in favor of this light theme)
-- No build tooling, bundler, or minification — this is meant to be a single
-  portable file. If it grows significantly, consider splitting into
-  `index.html` / `styles.css` / `script.js` for maintainability, but that's
-  optional.
-- Not yet tested on an actual desktop browser at full width — this was
-  built and reviewed entirely on mobile during the draft phase. **Test on a
-  real screen size before treating anything visual as final**, especially
-  the sidebar TOC (`>1180px` only) and the multi-column grids in `#work`,
-  `#code`, and the hero.
+- No dark mode toggle (site is light-theme only)
+- No build tooling, bundler, or minification — this is meant to stay a
+  single portable file unless it grows enough to justify splitting into
+  `index.html` / `styles.css` / `script.js`
+- Desktop-width testing (1024/1180/1200/1280/1440/1920px) and mobile
+  (375px) has been done — no known layout breakage at any tested breakpoint
 
 ---
 
-## 7. Credits / attribution notes baked into the content
+## 8. Credits / attribution notes baked into the content
 
-- MARL thesis (`#work`, module 1) is a 5-person team project — Badal, Lopez,
-  Mananguit, Marquez, Medenilla — advised by Asst. Prof. Kanny Krizzy D.
-  Serrano, MSc. Copy explicitly frames Khalil's contribution (MARL
-  architecture, DDQN implementation, simulation/evaluation design) rather
-  than claiming sole authorship.
-- MPU microprocessor design (`#work`, module 2) is a 9-person team project —
-  Abamonga, Badal, Barola, Fernando, Ko, Mananguit, Nacu, Villajin, Zoleta.
-  Same framing principle applies.
+- MARL thesis (`#work`, module 1) is a 5-person team project, currently at
+  the development stage (proposal complete) — Badal, Lopez, Mananguit,
+  Marquez, Medenilla — advised by Asst. Prof. Kanny Krizzy D. Serrano, MSc.
+- SAP-2 microprocessor design (`#work`, module 2) is a 9-person team project
+  — Abamonga, Badal, Barola, Fernando, Ko, Mananguit, Nacu, Villajin,
+  Zoleta. Copy explicitly credits Khalil with leading the architecture and
+  control unit design *and* driving the bulk of the cross-module integration
+  debugging — this is deliberately specific (not just "contributed to"),
+  since that debugging work was substantial and was previously undersold in
+  an earlier copy pass.
 - Khyle Audio plugin suite (`#work`, module 3) is solo work — no team
-  attribution needed.
+  attribution needed. Copy is careful to frame the plugins as *inspired by*
+  favorite gear's sound and features (then built out from there in original
+  code), not as literal circuit models — an earlier draft overclaimed
+  "modeling real circuit behavior," which wasn't accurate.
+- RoboGear Auto (`#experience`) copy is specific that Khalil was the team's
+  **sole** sound engineer working directly with developers, not one of
+  several collaborating sound engineers, and that the Best Sound Design
+  nomination is separate from (concurrent with) the studio's own Best Mobile
+  Game win — don't conflate the two, or blur "nominee" into "winner."
 
-Keep this framing intact in any future copy edits — it was a deliberate
-choice, not an oversight.
+Keep this framing intact in any future copy edits — none of it is
+incidental; each distinction above was a deliberate correction made during
+development.
