@@ -16,6 +16,8 @@
     --muted:#4A453C;
     --dim:#756D5E;
     --brass:#3E6B63;
+    --rust:#B5502E;
+    --gold:#B98A2E;
     --border:#D8D2C3;
     --mono:'Space Mono', monospace;
     --sans:'Inter', sans-serif;
@@ -103,10 +105,12 @@
     justify-content:space-between;
   }
   .nav-logo{
-    font-family:var(--mono);
-    font-weight:700;
-    font-size:14px;
-    letter-spacing:0.02em;
+    font-family:var(--display);
+    font-weight:800;
+    font-size:24px;
+    letter-spacing:0.01em;
+    text-transform:uppercase;
+    line-height:1;
   }
   .nav-logo span{color:var(--brass);}
   .nav-links{
@@ -261,19 +265,23 @@
     overflow:hidden;
   }
   .module{
+    --module-accent:var(--brass);
     background:var(--surface);
     padding:32px;
     display:grid;
     grid-template-columns:150px 1fr;
     gap:28px;
+    border-left:4px solid var(--module-accent);
   }
+  .module:nth-child(2){--module-accent:var(--rust);}
+  .module:nth-child(3){--module-accent:var(--gold);}
   @media (max-width:700px){
     .module{grid-template-columns:1fr;gap:14px;}
   }
   .module-tag{
     font-family:var(--mono);
     font-size:11px;
-    color:var(--brass);
+    color:var(--module-accent);
     letter-spacing:0.04em;
   }
   .module-tag > .tag-label{
@@ -786,13 +794,11 @@
           Metro Manila's EDSA Carousel, a corridor carrying upward of 180,000 daily riders.
           The policy is trained and stress-tested on a SUMO-calibrated microsimulation
           under non-ideal conditions: weather-induced travel delays, discrete bus
-          breakdowns, and passenger demand surges. Khalil's contribution centers on the
-          MARL architecture, DDQN implementation, and simulation/evaluation design.
+          breakdowns, and passenger demand surges.
         </p>
         <ul>
           <li>DDQN + parameter sharing</li>
           <li>SUMO microsimulation</li>
-          <li>PettingZoo AEC</li>
           <li>Python</li>
         </ul>
         <figure class="module-figure">
@@ -843,11 +849,13 @@
       <div>
         <h3>Khyle Audio — plugin suite</h3>
         <p>
-          A pair of VST3 audio plugins built independently in JUCE/C++, modeling real
-          circuit and DSP behavior rather than approximating it — compiled and tested end
-          to end in Reaper. <strong style="color:var(--text)">Rootbound</strong> is a
-          granular reverb built around a custom grain engine and diffusion network, aiming
-          for an Eventide Blackhole-style character. <strong style="color:var(--text)">Pocket
+          A pair of VST3 audio plugins built independently in JUCE/C++, inspired by the
+          sound and feature set of favorite outboard gear and pedals, then reworked and
+          expanded on from there — compiled and tested end to end in
+          <strong style="color:var(--text)">Reaper</strong>, a digital audio workstation
+          (DAW). <strong style="color:var(--text)">Rootbound</strong> is a granular reverb
+          built around a custom grain engine and diffusion network, aiming for an Eventide
+          Blackhole-style character. <strong style="color:var(--text)">Pocket
           Tracer</strong> is a multi-mode delay plugin. Hear both in action below.
         </p>
         <ul>
@@ -906,23 +914,18 @@
       <span class="demo-dot" id="demoDot"></span>
       <span id="demoStatusText">Ready — tap a state to play</span>
     </div>
-    <p class="demo-note">Audio placeholders — swap in real clips (see Maintenance notes).</p>
   </div>
 
   <audio id="audio-dry" preload="none">
-    <!-- Replace with: dry-guitar.mp3 -->
     <source src="dry-guitar.mp3" type="audio/mpeg">
   </audio>
   <audio id="audio-rootbound" preload="none">
-    <!-- Replace with: rootbound-guitar.mp3 -->
     <source src="rootbound-guitar.mp3" type="audio/mpeg">
   </audio>
   <audio id="audio-pockettracer" preload="none">
-    <!-- Replace with: pockettracer-guitar.mp3 -->
     <source src="pockettracer-guitar.mp3" type="audio/mpeg">
   </audio>
   <audio id="audio-both" preload="none">
-    <!-- Replace with: both-guitar.mp3 -->
     <source src="both-guitar.mp3" type="audio/mpeg">
   </audio>
 </section>
@@ -977,7 +980,6 @@
           </div>
         </div>
         <audio id="ostAudio" preload="none">
-          <!-- Replace with: robogear-ost.mp3 -->
           <source src="robogear-ost.mp3" type="audio/mpeg">
         </audio>
         <div class="photo-pair">
