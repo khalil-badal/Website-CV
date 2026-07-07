@@ -830,6 +830,16 @@
 
   ::selection{background:var(--brass);color:var(--bg);}
 
+  .reveal{
+    opacity:0;
+    transform:translateY(16px);
+    transition:opacity .5s ease-out, transform .5s ease-out;
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:none;
+  }
+
   @media (prefers-reduced-motion:reduce){
     html{scroll-behavior:auto;}
     *{transition:none !important;}
@@ -1299,6 +1309,31 @@
   window.addEventListener('scroll', updateActiveTocLink, { passive: true });
   window.addEventListener('resize', updateActiveTocLink);
   updateActiveTocLink();
+
+  // Scroll-reveal: fade + rise once as each block enters view. Skipped entirely
+  // under prefers-reduced-motion, and the .reveal class is only ever added here
+  // in JS — so a no-JS visitor always sees full-opacity content, never stuck hidden.
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window){
+    const revealTargets = document.querySelectorAll(
+      'section:not(.hero) > .kicker, section:not(.hero) > h2, section:not(.hero) > .lede, ' +
+      'section:not(.hero) > .about-grid, section:not(.hero) > .modules, ' +
+      'section:not(.hero) > .demo-box, section:not(.hero) > .repo-grid, ' +
+      'section:not(.hero) > .timeline, section:not(.hero) > .contact-links'
+    );
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting){
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -10% 0px' });
+
+    revealTargets.forEach(el => {
+      el.classList.add('reveal');
+      revealObserver.observe(el);
+    });
+  }
   const clips = {
     dry: document.getElementById('audio-dry'),
     rootbound: document.getElementById('audio-rootbound'),
