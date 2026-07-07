@@ -83,12 +83,12 @@ for dark mode — see §4 for how the toggle itself works.
 |---|---|---|---|
 | `--bg` | `#F5F2EA` | `#1B1914` | Page background |
 | `--surface` | `#FFFFFF` | `#242119` | Card backgrounds |
-| `--surface-2` | `#EDE9DE` | `#2E2A20` | Secondary surface (module tags, chips, players, form inputs) |
+| `--surface-2` | `#EDE9DE` | `#2E2A20` | Secondary surface (module tags, chips, players) |
 | `--text` | `#1A1815` | `#F2EEE2` | Primary text |
 | `--muted` | `#4A453C` | `#C7C0AE` | Body copy / descriptions (high contrast, readable at length) |
 | `--dim` | `#756D5E` | `#8D8570` | Metadata only — nav links, tag chips, small labels |
 | `--brass` | `#3E6B63` | `#5EA394` | Primary accent (dusty teal in light, brightened for dark-bg contrast) |
-| `--rust` | `#B5502E` | `#E2825A` | Secondary accent — work module 2 (SAP-2), form error state |
+| `--rust` | `#B5502E` | `#E2825A` | Secondary accent — work module 2 (SAP-2) |
 | `--gold` | `#B98A2E` | `#E3B15A` | Tertiary accent — work module 3 (Khyle Audio) |
 | `--border` | `#D8D2C3` | `#3A3527` | All borders, dividers, SVG divider strokes |
 
@@ -120,8 +120,7 @@ Three font families, each with a distinct job — don't blur these roles:
   (`.nav-logo`). Uppercase, bold (800 weight), tight line-height. This is the
   one place the site gets loud/distinctive.
 - **`--mono`: 'Space Mono'** — used for labels, nav links, kickers, tags,
-  module metadata, buttons, form labels. This is the "technical readout"
-  voice.
+  module metadata, buttons. This is the "technical readout" voice.
 - **`--sans`: 'Inter'** — used for actual body copy / paragraphs. This is the
   "just let me read it" voice.
 
@@ -201,8 +200,8 @@ Single HTML file, sections in this order (see `<section id="...">` tags):
    NEES
 7. `#education` ("Foundations") — Timeline: UST, Romblon State University,
    2 CCNA certs (thumbnail + lightbox each)
-8. `#contact` ("Let's talk") — real contact form (see §7) + email/GitHub
-   links as a fallback
+8. `#contact` ("Let's talk") — email / GitHub links (mailto: only,
+   deliberately — see §9)
 
 ### Navigation — three layers depending on viewport width
 - **≥1180px:** fixed left-side table of contents (`<aside class="toc">`),
@@ -229,7 +228,7 @@ Pocket Tracer / both). Only one clip plays at a time — clicking a new state
 stops whatever's currently playing and starts the new clip from `0`. Active
 button gets teal border + highlighted label. Status text and a small dot
 indicator show playing/paused/finished state. All 5 audio files are real —
-no placeholders remain (see §8).
+no placeholders remain (see §7).
 
 ### B. RoboGear Auto OST player (inside `#experience`)
 A compact inline play/pause button + track title + status text, styled as a
@@ -277,30 +276,7 @@ external JS dependencies.
 
 ---
 
-## 7. Contact form
-
-`#contact` has a real `<form>` (name / email / message) that POSTs to
-[Formspree](https://formspree.io) via `fetch` (no page navigation — inline
-"Sending…" / success / error status text instead). Mailto links remain below
-it as a fallback that always works regardless of form config.
-
-**Setup required:** the form's `action` currently points at a placeholder —
-`https://formspree.io/f/YOUR_FORM_ID`, clearly marked with an HTML comment
-right above the `<form>` tag. To make it actually deliver messages:
-
-1. Create a free account at [formspree.io](https://formspree.io)
-2. Create a new form, copy the endpoint URL it gives you
-   (`https://formspree.io/f/xxxxxxxx`)
-3. Replace `YOUR_FORM_ID` in the `action` attribute with that ID
-4. That's it — no other code changes needed. Formspree's free tier includes
-   basic spam filtering.
-
-Until that's done, submitting the form shows "Form not connected yet — email
-me directly below instead" rather than silently failing or looking broken.
-
----
-
-## 8. Assets
+## 7. Assets
 
 The original draft was built entirely around placeholders — five `<audio>`
 tags pointing at `.mp3` files that didn't exist yet, each marked with an
@@ -336,7 +312,7 @@ changes needed.
 
 ---
 
-## 9. Extending the site
+## 8. Extending the site
 
 - **Adding a new project module:** copy one `.module` block inside `#work`,
   update the `.module-tag` (`<span class="tag-label">`) and, if it's a team
@@ -387,21 +363,22 @@ changes needed.
 
 ---
 
-## 10. Known limitations / not done yet
+## 9. Known limitations / not done yet
 
+- No contact form (mailto: links only — a real form with a Formspree
+  backend was built and then deliberately removed; direct email felt better
+  and simpler for this site, and it avoids depending on a third-party
+  service just to receive messages)
 - No build tooling, bundler, or minification — this is meant to stay a
   single portable file unless it grows enough to justify splitting into
   `index.html` / `styles.css` / `script.js`
-- Contact form needs a real Formspree form ID before it actually delivers
-  messages (see §7) — currently shows a graceful "not connected yet" message
-  instead of silently failing
 - Desktop-width testing (1024/1180/1200/1280/1440/1920px) and mobile
   (375px) has been done — no known layout breakage at any tested breakpoint,
   in both light and dark mode
 
 ---
 
-## 11. Credits / attribution notes baked into the content
+## 10. Credits / attribution notes baked into the content
 
 - MARL thesis (`#work`, module 1) is a 5-person team project, currently at
   the development stage (proposal complete) — Badal, Lopez, Mananguit,

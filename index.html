@@ -728,70 +728,6 @@
     transition:border-color .2s, color .2s;
   }
   .contact-link:hover{border-color:var(--brass);color:var(--brass);}
-
-  .contact-form{
-    max-width:480px;
-    margin:0 auto 40px;
-    text-align:left;
-    display:flex;
-    flex-direction:column;
-    gap:16px;
-  }
-  .form-field{
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-  }
-  .form-field label{
-    font-family:var(--mono);
-    font-size:11px;
-    color:var(--dim);
-    letter-spacing:0.03em;
-  }
-  .form-field input, .form-field textarea{
-    font-family:var(--sans);
-    font-size:14px;
-    color:var(--text);
-    background:var(--surface);
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:12px 14px;
-    resize:vertical;
-  }
-  .form-field input:focus, .form-field textarea:focus{
-    outline:none;
-    border-color:var(--brass);
-  }
-  .form-submit{
-    font-family:var(--mono);
-    font-size:14px;
-    color:var(--surface);
-    background:var(--brass);
-    border:1px solid var(--brass);
-    padding:14px 22px;
-    border-radius:8px;
-    cursor:pointer;
-    transition:opacity .2s;
-    align-self:flex-start;
-  }
-  .form-submit:hover{opacity:0.85;}
-  .form-submit:disabled{opacity:0.6;cursor:not-allowed;}
-  .form-status{
-    font-family:var(--mono);
-    font-size:12px;
-    color:var(--dim);
-    min-height:16px;
-  }
-  .form-status.success{color:var(--brass);}
-  .form-status.error{color:var(--rust);}
-  .contact-divider{
-    font-family:var(--mono);
-    font-size:11px;
-    color:var(--dim);
-    text-align:center;
-    margin:32px 0 24px;
-    letter-spacing:0.05em;
-  }
   footer{
     text-align:center;
     padding:32px 24px;
@@ -1231,28 +1167,6 @@
   <h2>Let's talk</h2>
   <p class="lede">Reach out for questions, collaboration, or a closer look at any of the work above.</p>
 
-  <!-- Replace with your own Formspree form endpoint: sign up free at
-       https://formspree.io, create a form, and swap YOUR_FORM_ID below. -->
-  <form class="contact-form" id="contactForm" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
-    <div class="form-field">
-      <label for="cf-name">Name</label>
-      <input type="text" id="cf-name" name="name" required>
-    </div>
-    <div class="form-field">
-      <label for="cf-email">Email</label>
-      <input type="email" id="cf-email" name="email" required>
-    </div>
-    <div class="form-field">
-      <label for="cf-message">Message</label>
-      <textarea id="cf-message" name="message" rows="4" required></textarea>
-    </div>
-    <input type="hidden" name="_subject" value="New message from khalilbadal.dev">
-    <button class="form-submit" type="submit">Send message</button>
-    <p class="form-status" id="formStatus"></p>
-  </form>
-
-  <div class="contact-divider">— or reach out directly —</div>
-
   <div class="contact-links">
     <a class="contact-link" href="mailto:khalil.badal.eng@ust.edu.ph">khalil.badal.eng@ust.edu.ph</a>
     <a class="contact-link" href="mailto:khalilbadal04@gmail.com">khalilbadal04@gmail.com</a>
@@ -1453,37 +1367,6 @@
       mobileMenu.classList.remove('open');
       navHamburger.classList.remove('open');
       navHamburger.setAttribute('aria-expanded', 'false');
-    });
-  });
-
-  const contactForm = document.getElementById('contactForm');
-  const formStatus = document.getElementById('formStatus');
-  const formSubmit = contactForm.querySelector('.form-submit');
-
-  contactForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    formSubmit.disabled = true;
-    formStatus.className = 'form-status';
-    formStatus.textContent = 'Sending…';
-
-    fetch(contactForm.action, {
-      method: 'POST',
-      body: new FormData(contactForm),
-      headers: { 'Accept': 'application/json' }
-    }).then(response => {
-      if (response.ok){
-        formStatus.className = 'form-status success';
-        formStatus.textContent = 'Message sent — thanks, I\'ll get back to you soon.';
-        contactForm.reset();
-      } else {
-        formStatus.className = 'form-status error';
-        formStatus.textContent = 'Form not connected yet — email me directly below instead.';
-      }
-    }).catch(() => {
-      formStatus.className = 'form-status error';
-      formStatus.textContent = 'Form not connected yet — email me directly below instead.';
-    }).finally(() => {
-      formSubmit.disabled = false;
     });
   });
 </script>
