@@ -361,10 +361,30 @@ currently over (using each section's `offsetTop` vs. scroll position + 35% of
 viewport height as the trigger line) and toggles `.active` on the matching
 `.toc-link`.
 
-### E. Dark mode toggle
+### E. Scroll-reveal animation
+Each content section's kicker label, heading, lede, and main content block
+(the grid/list/card container — 25 elements total across `#about` through
+`#contact`) get a `.reveal` class added by JS on load, then fade + rise
+(`opacity 0→1`, `translateY(16px)→0`, 0.5s ease-out) once as they cross ~10%
+into the viewport, via a single shared `IntersectionObserver`. Each element
+reveals once — the observer unobserves it right after, so scrolling back up
+and down again doesn't re-trigger it. The hero (`#top`) is left alone since
+it's already visible on load; animating it would just be a flash of content
+appearing then re-fading.
+
+Two things make this safe to layer on:
+- It respects `prefers-reduced-motion: reduce` — the whole block is skipped
+  under that media query, so nothing is tagged and everything renders at full
+  opacity immediately.
+- The `.reveal` class is only ever added by JS, never present in the raw
+  HTML. If JS fails to load for any reason, elements simply keep their
+  default full-opacity state — there's no way to end up with content stuck
+  invisible.
+
+### F. Dark mode toggle
 See §4.
 
-### F. Mobile nav menu
+### G. Mobile nav menu
 See §5.
 
 All JS lives in one `<script>` block at the end of `<body>`, plus one tiny
