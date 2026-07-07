@@ -250,9 +250,11 @@ Single HTML file, sections in this order (see `<section id="...">` tags):
 
 The nav bar (`nav-right`) also holds two persistent controls to the right of the
 links, visible at every viewport width: a **CV** button (`.nav-cv`, a document
-icon + "CV" label) that opens `assets/pdf/Khalil-Badal-CV.pdf` in a new tab, and
-the dark-mode toggle (see §4). On phones, where the inline link row collapses,
-both stay visible alongside the hamburger.
+icon + "CV" label) that previews `assets/pdf/Khalil-Badal-CV.pdf` in the same
+lightbox overlay used for the certificates (see §6C), and the dark-mode toggle
+(see §4). On phones, where the inline link row collapses, both stay visible
+alongside the hamburger. The button keeps a plain `href` to the PDF as a no-JS
+fallback — the click handler `preventDefault()`s it to open the overlay instead.
 
 ### Navigation — three layers depending on viewport width
 - **≥1180px:** fixed left-side table of contents (`<aside class="toc">`),
@@ -308,12 +310,20 @@ correctly in real usage. It's only automated/scripted testing (calling
 see `play()` silently fail or resolve out of order; don't mistake that for a
 real bug without testing with an actual click first.
 
-### C. Certificate / proof-photo lightbox
+### C. Certificate / proof-photo / CV lightbox
 A single reusable component (`.cert-thumb` + `#lightbox`): any button with
 `data-cert-src` / `data-cert-alt` attributes opens a full-screen overlay with
-the full image on click; clicking anywhere (or pressing Escape) closes it.
-Currently used in 3 places — the 2 CCNA certs in `#education`, and the Best
-Game Audio Design and Music nomination photo in `#experience`.
+the full image on click; clicking the backdrop or image, pressing Escape, or
+hitting the ✕ close button dismisses it. Currently used in 3 places — the 2 CCNA
+certs in `#education`, and the Best Game Audio Design and Music nomination photo
+in `#experience`.
+
+The same overlay does double duty for the **CV**: the lightbox holds both an
+`<img id="lightboxImg">` and an `<iframe id="lightboxPdf">`. `openImageLightbox()`
+shows the image and hides the iframe (certs); `openPdfLightbox()` does the
+reverse (the nav CV button, see §5). Clicks *inside* the PDF iframe don't bubble
+to the backdrop, so the document stays open while you scroll it — that's why the
+persistent ✕ button was added, giving a reliable way to close either mode.
 
 The JS binds *every* `.cert-thumb` on the page automatically — adding a new
 zoomable image needs zero script changes, just the two data attributes:
