@@ -10,6 +10,18 @@ from `main`).
 The markup/styles/script live in one `index.html` — no build step, no JS
 framework, no dependencies beyond three Google Fonts.
 
+![Portfolio site — hero / top of page (light mode)](assets/screenshots/hero-light.png)
+
+The site ships with a built-in dark mode (toggle in the nav) and a **CV** button
+that opens the résumé PDF in a new tab:
+
+![Portfolio site — hero / top of page (dark mode)](assets/screenshots/hero-dark.png)
+
+> 📚 **Building this was also a learning exercise.** Notes mapping the whole build
+> to the six SDLC phases — written after the Prompt Engineering Orientation — live
+> in [`docs/sdlc/`](docs/sdlc/README.md) and are summarized in §11 below. A full
+> section-by-section screenshot gallery is in the [Screenshots](#screenshots) block.
+
 ---
 
 ## 1. Getting started
@@ -41,9 +53,13 @@ pipeline.
 index.html              all markup, CSS, and JS (single file, see below)
 README.md               this file
 .gitignore
+docs/
+  sdlc/                  SDLC learning notes, one file per phase (see §11)
 assets/
-  images/                photos, screenshots, extracted diagrams
-  certs/                 CCNA certificate images
+  images/                photos, plugin screenshots, extracted diagrams
+  certs/                 CCNA certificate images + Credly badge images
+  pdf/                   Khalil-Badal-CV.pdf (linked from the nav "CV" button)
+  screenshots/           README screenshots (hero + one per section)
 dry-guitar.mp3           Khyle Audio demo clips (repo root, see §6)
 rootbound-guitar.mp3
 pockettracer-guitar.mp3
@@ -91,6 +107,21 @@ for dark mode — see §4 for how the toggle itself works.
 | `--rust` | `#B5502E` | `#E2825A` | Secondary accent — work module 2 (SAP-2) |
 | `--gold` | `#B98A2E` | `#E3B15A` | Tertiary accent — work module 3 (Khyle Audio) |
 | `--border` | `#D8D2C3` | `#3A3527` | All borders, dividers, SVG divider strokes |
+
+Every color is a token defined once and overridden as a block for dark mode —
+this is the single decision that made dark mode cheap to add later:
+
+```css
+:root{
+  --bg:#F5F2EA;  --surface:#FFFFFF;  --text:#1A1815;
+  --brass:#3E6B63; /* primary accent */  --border:#D8D2C3;
+  /* …all other tokens… */
+}
+[data-theme="dark"]{
+  --bg:#1B1914;  --surface:#242119;  --text:#F2EEE2;
+  --brass:#5EA394; /* brightened for dark-bg contrast */  --border:#3A3527;
+}
+```
 
 `--bg-rgb` and `--brass-rgb` also exist (the same colors as R,G,B triplets,
 no `rgb()`/`#` wrapper) specifically so a couple of translucent
@@ -153,6 +184,18 @@ hamburger). Mechanics:
   `data-theme="dark"` on `<html>` *before* the page paints. The full toggle
   logic (click handler, icon swap, `localStorage` write) lives in the main
   script at the bottom of `<body>`, same as everything else.
+
+  ```html
+  <!-- runs before <body> paints, so the correct theme is applied on first frame -->
+  <script>
+    (function(){
+      var stored = localStorage.getItem('theme');
+      var theme = stored || (window.matchMedia &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if (theme === 'dark') document.documentElement.setAttribute('data-theme', 'dark');
+    })();
+  </script>
+  ```
 - **Everything is a CSS variable.** Flipping `data-theme` on `<html>` is
   enough for the vast majority of the page — see §3's palette table.
 - **The two exceptions that needed real work:** the 7 wavy `<svg class="trace">`
@@ -199,9 +242,17 @@ Single HTML file, sections in this order (see `<section id="...">` tags):
    PGDX photo pair + nomination-proof lightbox thumbnail), UST Tiger TV, UST
    NEES
 7. `#education` ("Foundations") — Timeline: UST, Romblon State University,
-   2 CCNA certs (thumbnail + lightbox each)
+   2 CCNA certs. Each cert entry is a two-column row: date/title/description
+   on the left, the real Credly badge image (72px, clickable) on the right —
+   below 640px the badge stacks under the text instead of sitting beside it.
 8. `#contact` ("Let's talk") — email / GitHub links (mailto: only,
    deliberately — see §9)
+
+The nav bar (`nav-right`) also holds two persistent controls to the right of the
+links, visible at every viewport width: a **CV** button (`.nav-cv`, a document
+icon + "CV" label) that opens `assets/pdf/Khalil-Badal-CV.pdf` in a new tab, and
+the dark-mode toggle (see §4). On phones, where the inline link row collapses,
+both stay visible alongside the hamburger.
 
 ### Navigation — three layers depending on viewport width
 - **≥1180px:** fixed left-side table of contents (`<aside class="toc">`),
@@ -230,6 +281,18 @@ button gets teal border + highlighted label. Status text and a small dot
 indicator show playing/paused/finished state. All 5 audio files are real —
 no placeholders remain (see §7).
 
+```js
+buttons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    stopAll();                       // pause + reset every clip first
+    setActive(btn);
+    currentAudio = clips[btn.dataset.state];
+    currentAudio.currentTime = 0;
+    currentAudio.play();             // called inside the click = a real user gesture
+  });
+});
+```
+
 ### B. RoboGear Auto OST player (inside `#experience`)
 A compact inline play/pause button + track title + status text, styled as a
 small pill component (`.ost-player`). Coordinated with the demo switcher
@@ -247,16 +310,40 @@ real bug without testing with an actual click first.
 
 ### C. Certificate / proof-photo lightbox
 A single reusable component (`.cert-thumb` + `#lightbox`): any button with
-`data-cert-src` / `data-cert-alt` attributes shows a small thumbnail that,
-when clicked, opens a full-screen overlay with the full image; clicking
-anywhere (or pressing Escape) closes it. Currently used in 3 places — the 2
-CCNA certs in `#education`, and the Best Game Audio Design and Music
-nomination photo in `#experience`. The RoboGear entry deliberately uses a
-tightly-cropped image for the small thumbnail but points `data-cert-src` at
-the full uncropped photo (crowd included) for the expanded view, since the
-crowd is part of what makes it read as proof the event happened. Follow that
-same pattern (cropped thumbnail, full image on expand) for any future
-addition to this component.
+`data-cert-src` / `data-cert-alt` attributes opens a full-screen overlay with
+the full image on click; clicking anywhere (or pressing Escape) closes it.
+Currently used in 3 places — the 2 CCNA certs in `#education`, and the Best
+Game Audio Design and Music nomination photo in `#experience`.
+
+The JS binds *every* `.cert-thumb` on the page automatically — adding a new
+zoomable image needs zero script changes, just the two data attributes:
+
+```js
+document.querySelectorAll('.cert-thumb').forEach(btn => {
+  btn.addEventListener('click', () => {
+    lightboxImg.src = btn.dataset.certSrc;      // full-size image
+    lightboxImg.alt = btn.dataset.certAlt || '';
+    lightbox.classList.add('open');
+  });
+});
+```
+
+The two "thumbnail" treatments on top of the shared `.cert-thumb` behavior
+differ by design intent:
+- **RoboGear nomination photo:** a small pill button (icon + "View
+  nomination" label). Deliberately uses a tightly-cropped image for the
+  visible thumbnail but points `data-cert-src` at the full uncropped photo
+  (crowd included) for the expanded view, since the crowd is part of what
+  makes it read as proof the event happened.
+- **CCNA certs:** the real Credly badge image *is* the clickable thumbnail
+  (class `cert-thumb cert-badge` on the same `<button>`) — no separate label
+  or pill chrome, just the 72px badge with a hover scale-up. `.cert-badge`
+  overrides `.cert-thumb`'s default pill styling (border/background/padding)
+  back to nothing, since a Credly badge doesn't need a frame around it. This
+  is the pattern to copy for "the real asset itself is naturally a good
+  thumbnail" cases; use the RoboGear pill pattern instead when the thumbnail
+  needs to be cropped differently from the full image, or needs a text label
+  to make sense as a button.
 
 ### D. Scroll-spy table of contents
 Plain JS, no framework — on scroll, calculates which section the viewport is
@@ -291,7 +378,15 @@ plain text). All of that has since been resolved:
 | Rootbound / Pocket Tracer GUI | Not built yet, just discussed | Real plugin screenshots — `assets/images/rootbound-gui.png`, `pockettracer-gui.png` |
 | Thesis architecture figure | Not built yet, just discussed | SARL-vs-MARL diagram cropped from the thesis manuscript — `assets/images/thesis-marl-diagram.png` |
 | MPU diagram | Not built yet, just discussed | SAP-2 block diagram extracted from the project PDF — `assets/images/mpu-block-diagram.png` |
-| CCNA certs | Listed as plain text only in `#education` | Real cert images, each behind a thumbnail + lightbox — `assets/certs/ccna-intro-to-networks.png`, `ccna-switching-routing-wireless.png` |
+| CCNA cert badges (thumbnails) | Certs listed as plain text only in `#education` | Real **Credly badge** images used as the clickable thumbnails in each cert row (72px, `.cert-badge`) — `assets/certs/ccna-intro-to-networks-badge.png`, `ccna-switching-routing-wireless-badge.png` |
+| CCNA full certificates (lightbox) | No expanded view | Full certificate scans shown in the lightbox when a badge is clicked — `assets/certs/ccna-intro-to-networks.png`, `ccna-switching-routing-wireless.png` |
+| Résumé / CV | CVs existed only in gitignored `source-material/`, not linked from the site | Deployed PDF opened by the nav **CV** button — `assets/pdf/Khalil-Badal-CV.pdf` |
+| README screenshots | None | Hero (light + dark) and one image per section, captured from the running site — `assets/screenshots/*.png` (see the [Screenshots](#screenshots) gallery) |
+
+Each CCNA row therefore uses two files: the small Credly **badge** (the thumbnail
+you see inline) and the full **certificate** image (what opens in the lightbox).
+The `.cert-badge` treatment strips the default pill chrome so the badge stands on
+its own — see §6C.
 
 Two photos were added beyond the original placeholder list: the RoboGear PGDX
 photo pair (`assets/images/robogear-pgdx-1.jpg`, `-2.jpg`, converted from HEIC
@@ -304,11 +399,14 @@ root — if any ever need replacing, just overwrite the file in place, no code
 changes needed.
 
 ### Still not added
-- **Resume/CV PDF download link** near `#contact` — CVs exist in
-  `source-material/` but aren't linked from the live site (not requested yet)
 - **Outbound links for the thesis and MPU project** — those two `#work`
   modules have no link out (unlike the GitHub cards and Khyle Audio), since
   there's no public repo or hosted PDF for either yet
+
+> **Resolved:** the résumé/CV is now live — `assets/pdf/Khalil-Badal-CV.pdf`,
+> opened from the **CV** button in the nav (see §5). It's a copy of
+> `source-material/CV_Badal_V2.pdf` promoted into the tracked `assets/` tree so
+> it deploys with the site.
 
 ---
 
@@ -378,6 +476,39 @@ changes needed.
 
 ---
 
+## Screenshots
+
+Every section of the live site, captured from the running page (light mode).
+The hero/top-of-page shot — in both light and dark mode — is at the top of this
+README.
+
+### About
+![About section — bio and skill tags](assets/screenshots/about.png)
+
+### Work — featured modules
+![Work section — MARL thesis, SAP-2 microprocessor, and Khyle Audio plugin suite](assets/screenshots/work.png)
+
+### Audio — Khyle Audio demo
+![Audio demo section — 4-state plugin switcher](assets/screenshots/demo.png)
+
+### Code — from GitHub
+![Code section — GitHub project cards](assets/screenshots/code.png)
+
+### Experience — track record
+![Experience section — RoboGear Auto OST player, PGDX photos, and timeline](assets/screenshots/experience.png)
+
+### Education & certifications
+![Education section — timeline with clickable CCNA Credly badges](assets/screenshots/education.png)
+
+### Contact
+![Contact section — email and GitHub links](assets/screenshots/contact.png)
+
+> Regenerate these anytime with `python -m http.server 8080` running and a
+> headless-Chrome screenshot pass — they're plain captures of the deployed
+> markup, so any UI change should be re-shot to keep this gallery honest.
+
+---
+
 ## 10. Credits / attribution notes baked into the content
 
 - MARL thesis (`#work`, module 1) is a 5-person team project, currently at
@@ -411,3 +542,26 @@ changes needed.
 Keep this framing intact in any future copy edits — none of it is
 incidental; each distinction above was a deliberate correction made during
 development.
+
+---
+
+## 11. Learning notes — SDLC & prompt engineering
+
+Building this site doubled as a worked example for the **Prompt Engineering
+Orientation**. The [`docs/sdlc/`](docs/sdlc/README.md) folder documents the six
+**Software Development Life Cycle** phases — the concept, the concrete decisions
+made on *this* project, and the prompt-engineering takeaways for each:
+
+| # | Phase | Notes | In one line |
+|---|---|---|---|
+| 1 | Planning | [docs/sdlc/01-planning.md](docs/sdlc/01-planning.md) | Decide what/why, and what "done" means. |
+| 2 | Analysis | [docs/sdlc/02-analysis.md](docs/sdlc/02-analysis.md) | Enumerate requirements + inventory assets. |
+| 3 | Design | [docs/sdlc/03-design.md](docs/sdlc/03-design.md) | Design system, IA, reusable components. |
+| 4 | Implementation | [docs/sdlc/04-implementation.md](docs/sdlc/04-implementation.md) | Build the single-file site. |
+| 5 | Testing | [docs/sdlc/05-testing.md](docs/sdlc/05-testing.md) | Verify across breakpoints/themes; the bugs caught. |
+| 6 | Maintenance | [docs/sdlc/06-maintenance.md](docs/sdlc/06-maintenance.md) | Deploy, extend, and keep it healthy. |
+
+The through-line: **a prompt is a spec** — every phase produces the information
+(goals, constraints, requirements, design tokens, acceptance criteria) that a
+good prompt has to carry. See the [SDLC index](docs/sdlc/README.md) for the full
+write-up.

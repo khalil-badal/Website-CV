@@ -153,6 +153,25 @@
   @media (max-width:640px){
     .nav-links{display:none;}
   }
+  .nav-cv{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    flex-shrink:0;
+    height:32px;
+    padding:0 12px;
+    border:1px solid var(--border);
+    border-radius:6px;
+    background:var(--surface-2);
+    color:var(--dim);
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:0.04em;
+    transition:border-color .2s, color .2s;
+  }
+  .nav-cv svg{width:14px;height:14px;}
+  .nav-cv:hover{border-color:var(--brass);color:var(--brass);}
+  .nav-cv:focus-visible{outline:1px solid var(--brass);outline-offset:2px;}
   .theme-toggle, .nav-hamburger{
     width:32px;
     height:32px;
@@ -695,6 +714,43 @@
     border:1px solid var(--border);
   }
 
+  .cert-entry{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+  }
+  @media (max-width:640px){
+    .cert-entry{
+      flex-direction:column;
+      align-items:flex-start;
+    }
+  }
+  .cert-badge{
+    flex-shrink:0;
+    background:none;
+    border:none;
+    padding:0;
+    cursor:pointer;
+    display:block;
+    line-height:0;
+    border-radius:8px;
+  }
+  .cert-badge img{
+    width:72px;
+    height:72px;
+    display:block;
+    border-radius:8px;
+    transition:transform .2s;
+  }
+  .cert-badge:hover img{
+    transform:scale(1.05);
+  }
+  .cert-badge:focus-visible{
+    outline:1px solid var(--brass);
+    outline-offset:2px;
+  }
+
   .lightbox{
     position:fixed;
     inset:0;
@@ -771,6 +827,10 @@
         <a href="#code">code</a>
         <a href="#contact">contact</a>
       </div>
+      <a class="nav-cv" href="assets/pdf/Khalil-Badal-CV.pdf" target="_blank" rel="noopener" aria-label="View CV (PDF, opens in new tab)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h4"/></svg>
+        <span>CV</span>
+      </a>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode">
         <svg id="themeIconMoon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         <svg id="themeIconSun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -1138,28 +1198,26 @@
     </div>
     <div class="t-item">
       <div class="t-date">2025–2026</div>
-      <div>
-        <h4>CCNA: Introduction to Networks</h4>
-        <p>Cisco Networking Academy, via University of Santo Tomas.</p>
-        <div class="cert-row">
-          <button class="cert-thumb" type="button" data-cert-src="assets/certs/ccna-intro-to-networks.png" data-cert-alt="CCNA: Introduction to Networks certificate, awarded to Khalil Badal">
-            <img src="assets/certs/ccna-intro-to-networks.png" alt="">
-            <span>View certificate</span>
-          </button>
+      <div class="cert-entry">
+        <div class="cert-text">
+          <h4>CCNA: Introduction to Networks</h4>
+          <p>Cisco Networking Academy, via University of Santo Tomas.</p>
         </div>
+        <button class="cert-thumb cert-badge" type="button" data-cert-src="assets/certs/ccna-intro-to-networks.png" data-cert-alt="CCNA: Introduction to Networks certificate, awarded to Khalil Badal">
+          <img src="assets/certs/ccna-intro-to-networks-badge.png" alt="CCNA: Introduction to Networks Credly badge">
+        </button>
       </div>
     </div>
     <div class="t-item">
       <div class="t-date">2025–2026</div>
-      <div>
-        <h4>CCNA: Switching, Routing, and Wireless Essentials</h4>
-        <p>Cisco Networking Academy, via University of Santo Tomas.</p>
-        <div class="cert-row">
-          <button class="cert-thumb" type="button" data-cert-src="assets/certs/ccna-switching-routing-wireless.png" data-cert-alt="CCNA: Switching, Routing, and Wireless Essentials certificate, awarded to Khalil Badal">
-            <img src="assets/certs/ccna-switching-routing-wireless.png" alt="">
-            <span>View certificate</span>
-          </button>
+      <div class="cert-entry">
+        <div class="cert-text">
+          <h4>CCNA: Switching, Routing, and Wireless Essentials</h4>
+          <p>Cisco Networking Academy, via University of Santo Tomas.</p>
         </div>
+        <button class="cert-thumb cert-badge" type="button" data-cert-src="assets/certs/ccna-switching-routing-wireless.png" data-cert-alt="CCNA: Switching, Routing, and Wireless Essentials certificate, awarded to Khalil Badal">
+          <img src="assets/certs/ccna-switching-routing-wireless-badge.png" alt="CCNA: Switching, Routing, and Wireless Essentials Credly badge">
+        </button>
       </div>
     </div>
   </div>
